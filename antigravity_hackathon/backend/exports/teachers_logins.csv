@@ -1,0 +1,12 @@
+email,full_name,role,password
+biology@school.mn,Биологийн багш,teacher,123456
+chemistry@school.mn,Химийн багш,teacher,123456
+english@school.mn,Англи хэлний багш,teacher,123456
+geography@school.mn,Газарзүйн багш,teacher,123456
+history@school.mn,Түүхийн багш,teacher,123456
+ict@school.mn,МТ багш,teacher,123456
+math@school.mn,Математикийн багш,teacher,123456
+mongolian@school.mn,Монгол хэлний багш,teacher,123456
+pe@school.mn,Биеийн тамирын багш,teacher,123456
+physics@school.mn,Физикийн багш,teacher,123456
+test@gmail.com,Test,teacher,123456
