@@ -1,10 +1,17 @@
-import { useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { apiFetch, pollJob } from "./api.js";
 import { useLessonAIStore } from "./store.js";
 import Step1AudioInput from "./Step1_AudioInput.jsx";
 import Step2Processing from "./Step2_Processing.jsx";
 import Step3ReviewEdit from "./Step3_ReviewEdit.jsx";
 import Step4Distribute from "./Step4_Distribute.jsx";
+
+const WIZARD_STEPS = [
+  { n: 1, short: "Аудио", hint: "Бичлэг эсвэл файл" },
+  { n: 2, short: "Боловсруулах", hint: "STT + материал" },
+  { n: 3, short: "Засварлах", hint: "Агуулга" },
+  { n: 4, short: "Илгээх", hint: "Сурагчид" },
+];
 
 export default function LessonAIAssistant({ lessonId, authToken }) {
   const abortRef = useRef(null);
@@ -24,7 +31,6 @@ export default function LessonAIAssistant({ lessonId, authToken }) {
     topic,
     transcriptId,
     transcriptText,
-    transcriptWarnings,
     materialId,
     materials,
     processingStep,
@@ -57,7 +63,7 @@ export default function LessonAIAssistant({ lessonId, authToken }) {
 
   const runTranscribeAndGenerate = async (blobOrFile) => {
     if (!token) {
-      setField({ error: "JWT токен оруулна уу (.env эсвэл props)." });
+      setField({ error: "Нэвтрэх токен олдсонгүй. Дахин нэвтэрнэ үү." });
       return;
     }
     const ac = new AbortController();
@@ -211,86 +217,117 @@ export default function LessonAIAssistant({ lessonId, authToken }) {
     }
   };
 
+  const currentMeta = WIZARD_STEPS.find((s) => s.n === step) || WIZARD_STEPS[0];
+
   return (
-    <div className="es-card" style={{ maxWidth: 960, margin: "0 auto" }}>
-      <h2 className="es-page-title" style={{ fontSize: "1.25rem" }}>
-        Алхам {step} / 4 — аудио → текст → материал
-      </h2>
-      <p style={{ color: "var(--es-muted)", marginTop: 0, marginBottom: 20, fontSize: "0.9rem" }}>
-        Дараалал: аудио оруулах → Chimege текст → Gemini материал → засвар → сурагчдад илгээх
-      </p>
+    <div className="es-ai-wizard">
+      <div className="es-ai-wizard__head">
+        <div className="es-ai-stepper-row" aria-hidden="true">
+          {WIZARD_STEPS.map((s, i) => (
+            <Fragment key={s.n}>
+              {i > 0 && <div className={`es-ai-step-line ${step > i ? "is-done" : ""}`} />}
+              <div
+                className={`es-ai-step-node ${step > s.n ? "is-done" : ""} ${step === s.n ? "is-current" : ""}`}
+              >
+                <div className="es-ai-step-node__circle" aria-hidden>
+                  {step > s.n ? "✓" : s.n}
+                </div>
+                <span className="es-ai-step-node__label">{s.short}</span>
+              </div>
+            </Fragment>
+          ))}
+        </div>
 
-      {step === 1 && (
-        <Step1AudioInput
-          tab={tab}
-          setTab={setTab}
-          file={file}
-          setFile={setFile}
-          metadataOpen={metadataOpen}
-          setMetadataOpen={setMetadataOpen}
-          date={date}
-          setDate={(v) => setField({ date: v })}
-          subject={subject}
-          setSubject={(v) => setField({ subject: v })}
-          grade={grade}
-          setGrade={(v) => setField({ grade: v })}
-          topic={topic}
-          setTopic={(v) => setField({ topic: v })}
-          onSubmitBlob={(blob) => runTranscribeAndGenerate(blob)}
-          onSubmitFile={(f) => runTranscribeAndGenerate(f)}
-          disabled={!token}
-        />
-      )}
+        <h2 className="es-ai-wizard__title">
+          Алхам {step}/4 — {currentMeta.short}
+        </h2>
+        <p className="es-ai-wizard__sub">
+          {step === 1 && "Микрофоноор бичэж эсвэл аудио файл оруулна. Дараа нь Chimege текст, Gemini материал үүсгэнэ."}
+          {step === 2 && "Сервер рүү аудио илгээж, текст болгож, материал бэлдэж байна. Хүлээнэ үү."}
+          {step === 3 && "Үүссэн товчлол, даалгавар, дасгалыг засаад хадгална. Дараа нь сурагчдаа түгээх алхамд шилжинэ."}
+          {step === 4 && "Тойм шалгаад, хүссэн бол ангийн ID зааж, сурагчдаа илгээнэ."}
+        </p>
+      </div>
 
-      {step === 2 && (
-        <Step2Processing
-          activeStep={processingStep}
-          transcriptPreview={transcriptText}
-          error={error || processingMessage}
-          onCancel={cancelProcessing}
-        />
-      )}
+      <div className="es-ai-wizard__body">
+        {step === 1 && (
+          <Step1AudioInput
+            tab={tab}
+            setTab={setTab}
+            file={file}
+            setFile={setFile}
+            metadataOpen={metadataOpen}
+            setMetadataOpen={setMetadataOpen}
+            date={date}
+            setDate={(v) => setField({ date: v })}
+            subject={subject}
+            setSubject={(v) => setField({ subject: v })}
+            grade={grade}
+            setGrade={(v) => setField({ grade: v })}
+            topic={topic}
+            setTopic={(v) => setField({ topic: v })}
+            onSubmitBlob={(blob) => runTranscribeAndGenerate(blob)}
+            onSubmitFile={(f) => runTranscribeAndGenerate(f)}
+            disabled={!token}
+          />
+        )}
 
-      {step === 3 && (
-        <Step3ReviewEdit
-          materials={mergeMaterialsFromStore()}
-          setMaterials={setMergedMaterials}
-          transcriptText={transcriptText}
-          onApproveSave={onApproveSave}
-          onRegenerate={runRegenerate}
-          onNext={() => {
-            setSent(false);
-            setField({ step: 4 });
-          }}
-          saving={saving}
-          busy={busy}
-        />
-      )}
+        {step === 2 && (
+          <Step2Processing
+            activeStep={processingStep}
+            transcriptPreview={transcriptText}
+            error={error || processingMessage}
+            onCancel={cancelProcessing}
+          />
+        )}
 
-      {step === 4 && (
-        <Step4Distribute
-          materials={mergeMaterialsFromStore()}
-          classId={selectedClassId}
-          setClassId={(v) => setField({ selectedClassId: v })}
-          notifyParents={notifyParents}
-          setNotifyParents={(v) => setField({ notifyParents: v })}
-          onSend={onDistribute}
-          sent={sent}
-          busy={busy}
-        />
-      )}
+        {step === 3 && (
+          <Step3ReviewEdit
+            materials={mergeMaterialsFromStore()}
+            setMaterials={setMergedMaterials}
+            transcriptText={transcriptText}
+            onApproveSave={onApproveSave}
+            onRegenerate={runRegenerate}
+            onNext={() => {
+              setSent(false);
+              setField({ step: 4 });
+            }}
+            saving={saving}
+            busy={busy}
+          />
+        )}
 
-      {error && step !== 2 && <p style={{ color: "#c62828", marginTop: 16 }}>{error}</p>}
+        {step === 4 && (
+          <Step4Distribute
+            materials={mergeMaterialsFromStore()}
+            classId={selectedClassId}
+            setClassId={(v) => setField({ selectedClassId: v })}
+            notifyParents={notifyParents}
+            setNotifyParents={(v) => setField({ notifyParents: v })}
+            onSend={onDistribute}
+            sent={sent}
+            busy={busy}
+          />
+        )}
 
-      <div style={{ marginTop: 24, display: "flex", justifyContent: "space-between" }}>
-        <button type="button" onClick={() => resetWizard()} style={{ border: "none", background: "none", color: "#666" }}>
+        {error && step !== 2 && (
+          <p className="es-alert es-alert-danger" style={{ marginTop: step === 1 ? 0 : 16 }}>
+            {error}
+          </p>
+        )}
+      </div>
+
+      <div className="es-ai-wizard__foot">
+        <button type="button" className="es-btn es-btn-ghost" onClick={() => resetWizard()}>
           Ноорог цэвэрлэх
         </button>
-        {step > 1 && step < 4 && (
-          <button type="button" onClick={() => setField({ step: Math.max(1, step - 1) })}>
-            Буцах
-          </button>
-        )}
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+          {step > 1 && step < 4 && (
+            <button type="button" className="es-btn es-btn-secondary" onClick={() => setField({ step: Math.max(1, step - 1) })}>
+              Өмнөх алхам
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

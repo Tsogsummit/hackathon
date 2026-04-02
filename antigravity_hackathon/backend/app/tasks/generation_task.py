@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, timezone
 from typing import Any
 
 from sqlalchemy.orm import Session
@@ -48,6 +49,9 @@ def run_material_generation_job(
             exam_questions=data.get("exam_questions"),
             next_lesson_plan=data.get("next_lesson_plan"),
             quality_warning=bool(data.get("quality_warning")),
+            teacher_approved=True,
+            sent_to_students=True,
+            distributed_at=datetime.now(timezone.utc),
             gemini_status="completed",
             original_gemini_output=json.loads(json.dumps(data, ensure_ascii=False)),
         )

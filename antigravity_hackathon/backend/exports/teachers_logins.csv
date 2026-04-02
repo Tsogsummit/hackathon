@@ -1,12 +1,12 @@
 email,full_name,role,password
-biology@school.mn,Биологийн багш,teacher,123456
-chemistry@school.mn,Химийн багш,teacher,123456
-english@school.mn,Англи хэлний багш,teacher,123456
-geography@school.mn,Газарзүйн багш,teacher,123456
-history@school.mn,Түүхийн багш,teacher,123456
-ict@school.mn,МТ багш,teacher,123456
-math@school.mn,Математикийн багш,teacher,123456
-mongolian@school.mn,Монгол хэлний багш,teacher,123456
-pe@school.mn,Биеийн тамирын багш,teacher,123456
-physics@school.mn,Физикийн багш,teacher,123456
-test@gmail.com,Test,teacher,123456
+biology@school.mn,Энхбат Хас,teacher,123456
+chemistry@school.mn,Очирбат Дөл,teacher,123456
+english@school.mn,Цэлмэг Тэмүү,teacher,123456
+geography@school.mn,Урангоо Тэмүүлэл,teacher,123456
+history@school.mn,Гэрэлмаа Саруул,teacher,123456
+ict@school.mn,Мөнх-Оргил Номун,teacher,123456
+math@school.mn,Мөнгөнцэцэг Шинэ,teacher,123456
+mongolian@school.mn,Мишээл Тайван,teacher,123456
+pe@school.mn,Пүрэвдорж Мандах,teacher,123456
+physics@school.mn,Болдбаатар Энх,teacher,123456
+test@gmail.com,Шинэцэцэг Оюун,teacher,123456

@@ -106,9 +106,9 @@ in Mongolian language. Return ONLY valid JSON, no markdown, no extra text:
 
 Guidelines:
 - summary: Write as if explaining to a student who missed class
-- exercises: Exactly 5 exercises total; match difficulty to apparent grade level
-- exam_questions: Exactly 10 exam questions; mix: 3 easy, 5 medium, 2 hard
-- next_lesson_plan: 3 learning objectives and 3 recommended activities
+- exercises: Exactly 3 exercises total; keep concise and practical
+- exam_questions: Exactly 5 exam questions; mix: 2 easy, 2 medium, 1 hard
+- next_lesson_plan: 2 learning objectives and 2 recommended activities
 - next_lesson_plan: Logically continues from what was taught today
 - If the transcript is unclear or too short (<50 words), still generate 
   the best possible output but set quality_warning to true
@@ -147,10 +147,32 @@ def _loads_lenient(raw: str) -> dict[str, Any]:
 
     # Fallback for Python-dict-like responses: {'k': 'v', 'ok': True}
     py_candidate = candidate.replace("null", "None").replace("true", "True").replace("false", "False")
-    data = ast.literal_eval(py_candidate)
-    if not isinstance(data, dict):
-        raise ValueError("Gemini response is not a JSON object")
-    return data
+    try:
+        data = ast.literal_eval(py_candidate)
+        if not isinstance(data, dict):
+            raise ValueError("Gemini response is not a JSON object")
+        return data
+    except (SyntaxError, ValueError) as e:
+        raise ValueError(f"Gemini response parse failed: {e}") from e
+
+
+def _repair_json_with_model(model: genai.GenerativeModel, raw: str) -> str:
+    repair_prompt = f"""You are a strict JSON repair tool.
+Fix the malformed JSON below and return ONLY one valid JSON object.
+Do not add explanations. Do not add markdown.
+
+Malformed JSON:
+{raw}
+"""
+    repaired = model.generate_content(
+        repair_prompt,
+        generation_config={
+            "temperature": 0.0,
+            "max_output_tokens": 3072,
+            "response_mime_type": "application/json",
+        },
+    )
+    return (repaired.text or "").strip()
 
 
 def _is_gemini_model_unavailable_error(exc: BaseException) -> bool:
@@ -165,7 +187,33 @@ def _is_gemini_model_unavailable_error(exc: BaseException) -> bool:
 
 def parse_and_validate(raw: str) -> GeminiMaterialsOut:
     data = _loads_lenient(raw)
+    # Keep response compact to reduce payload and latency downstream.
+    if isinstance(data.get("key_points"), list):
+        data["key_points"] = data["key_points"][:5]
+    if isinstance(data.get("exercises"), list):
+        data["exercises"] = data["exercises"][:3]
+    if isinstance(data.get("exam_questions"), list):
+        data["exam_questions"] = data["exam_questions"][:5]
+    if isinstance(data.get("next_lesson_plan"), dict):
+        lp = data["next_lesson_plan"]
+        if isinstance(lp.get("learning_objectives"), list):
+            lp["learning_objectives"] = lp["learning_objectives"][:2]
+        if isinstance(lp.get("recommended_activities"), list):
+            lp["recommended_activities"] = lp["recommended_activities"][:2]
     return GeminiMaterialsOut.model_validate(data)
+
+
+def _truncate_transcript(text: str, max_chars: int = 7000) -> str:
+    t = (text or "").strip()
+    if len(t) <= max_chars:
+        return t
+    head = int(max_chars * 0.6)
+    tail = max_chars - head
+    return (
+        t[:head]
+        + "\n\n[... transcript shortened for faster material generation ...]\n\n"
+        + t[-tail:]
+    )
 
 
 def generate_materials_from_transcript(transcript: str, metadata: dict[str, Any]) -> GeminiMaterialsOut:
@@ -176,28 +224,35 @@ def generate_materials_from_transcript(transcript: str, metadata: dict[str, Any]
     genai.configure(api_key=settings.gemini_api_key)
     model = genai.GenerativeModel(settings.gemini_model)
 
-    base_prompt = build_prompt(transcript, metadata)
+    compact_transcript = _truncate_transcript(transcript, max_chars=7000)
+    base_prompt = build_prompt(compact_transcript, metadata)
     extra = ""
     last_err: Exception | None = None
-    for attempt in range(3):
+    for attempt in range(2):
         prompt = base_prompt + extra
         try:
             response = model.generate_content(
                 prompt,
                 generation_config={
-                    "temperature": 0.3,
-                    "max_output_tokens": 4096,
+                    "temperature": 0.2,
+                    "max_output_tokens": 1800,
                     "response_mime_type": "application/json",
                 },
             )
             raw = (response.text or "").strip()
             return parse_and_validate(raw)
-        except (json.JSONDecodeError, ValidationError, ValueError) as e:
+        except (json.JSONDecodeError, ValidationError, ValueError, SyntaxError) as e:
             last_err = e
-            extra = (
-                "\n\nYour previous response was not valid JSON. "
-                "Return ONLY a raw JSON object."
-            )
+            # Second chance: ask Gemini to repair the malformed output.
+            try:
+                repaired_raw = _repair_json_with_model(model, raw if "raw" in locals() else "")
+                return parse_and_validate(repaired_raw)
+            except (json.JSONDecodeError, ValidationError, ValueError, SyntaxError) as repair_err:
+                last_err = repair_err
+                extra = (
+                    "\n\nYour previous response was not valid JSON. "
+                    "Return ONLY a raw JSON object. Ensure all strings are properly closed."
+                )
         except Exception as e:
             if _is_gemini_model_unavailable_error(e):
                 raise RuntimeError(

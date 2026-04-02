@@ -1,6 +1,7 @@
 from collections import defaultdict
 from typing import Annotated, Any
 
+import numpy as np
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, ConfigDict, Field
 from sqlalchemy import select
@@ -23,6 +24,8 @@ from app.models import (
 
 router = APIRouter(prefix="/grades", tags=["grades"])
 
+_MLR_FEATURE_COUNT = 6
+
 
 class GradeRecordCreate(BaseModel):
     student_id: int
@@ -42,6 +45,7 @@ class GradeRecordOut(BaseModel):
 
     id: int
     student_id: int
+    student_name: str | None = None
     class_id: int
     teacher_id: int
     term: str
@@ -87,7 +91,7 @@ def _to_grade(score: float) -> str:
     return "F"
 
 
-def _predict_score(rec: StudentGradeRecord) -> float:
+def _predict_score_heuristic(rec: StudentGradeRecord) -> float:
     score = (
         rec.homework_avg * 0.20
         + rec.quiz_avg * 0.10
@@ -97,6 +101,53 @@ def _predict_score(rec: StudentGradeRecord) -> float:
         + rec.final_exam * 0.20
         + rec.behavior_score * 0.05
     )
+    return round(max(0.0, min(100.0, score)), 2)
+
+
+def _feature_vector(rec: StudentGradeRecord) -> list[float]:
+    return [
+        float(rec.homework_avg),
+        float(rec.quiz_avg),
+        float(rec.project_score),
+        float(rec.attendance_rate),
+        float(rec.midterm_exam),
+        float(rec.behavior_score),
+    ]
+
+
+def _fit_mlr(records: list[StudentGradeRecord]) -> tuple[float, np.ndarray] | None:
+    # Need >= feature_count + 1 rows so the pseudo inverse has enough data.
+    if len(records) < _MLR_FEATURE_COUNT + 1:
+        return None
+    x = np.array([_feature_vector(r) for r in records], dtype=float)
+    y = np.array([float(r.final_exam) for r in records], dtype=float)
+    x_design = np.hstack((np.ones((x.shape[0], 1)), x))
+    try:
+        beta = np.linalg.pinv(x_design) @ y
+    except np.linalg.LinAlgError:
+        return None
+    return float(beta[0]), beta[1:]
+
+
+def _predict_score(db: Session, rec: StudentGradeRecord) -> float:
+    # Train by class data so each class can learn its own patterns.
+    train_records = (
+        db.query(StudentGradeRecord)
+        .filter(
+            StudentGradeRecord.class_id == rec.class_id,
+            StudentGradeRecord.id != rec.id,
+            StudentGradeRecord.final_exam.isnot(None),
+        )
+        .all()
+    )
+    model = _fit_mlr(train_records)
+    if model is None:
+        # Fallback keeps API functional when data is still sparse.
+        return _predict_score_heuristic(rec)
+
+    bias, weights = model
+    x = np.array(_feature_vector(rec), dtype=float)
+    score = float(bias + x @ weights)
     return round(max(0.0, min(100.0, score)), 2)
 
 
@@ -220,7 +271,7 @@ class GradeRecordPatch(BaseModel):
 
 
 def _save_prediction_and_alert(db: Session, rec: StudentGradeRecord, teacher: User) -> GradePredictionOut:
-    score = _predict_score(rec)
+    score = _predict_score(db, rec)
     grade = _to_grade(score)
     fail_prob = _fail_probability(score, rec.attendance_rate, rec.final_exam, rec.homework_avg)
     risk = _risk_label(fail_prob)
@@ -361,14 +412,35 @@ def list_class_records(
     class_id: int,
     user: Annotated[User, Depends(get_current_user)],
     db: Annotated[Session, Depends(get_db)],
-) -> list[StudentGradeRecord]:
+) -> list[GradeRecordOut]:
     _ensure_access_to_class(db, user, class_id)
-    return (
-        db.query(StudentGradeRecord)
+    rows = (
+        db.query(StudentGradeRecord, User)
+        .join(User, User.id == StudentGradeRecord.student_id)
         .filter(StudentGradeRecord.class_id == class_id)
         .order_by(StudentGradeRecord.updated_at.desc())
         .all()
     )
+    out: list[GradeRecordOut] = []
+    for rec, u in rows:
+        out.append(
+            GradeRecordOut(
+                id=rec.id,
+                student_id=rec.student_id,
+                student_name=(u.full_name or u.email) if u else None,
+                class_id=rec.class_id,
+                teacher_id=rec.teacher_id,
+                term=rec.term,
+                homework_avg=rec.homework_avg,
+                quiz_avg=rec.quiz_avg,
+                project_score=rec.project_score,
+                attendance_rate=rec.attendance_rate,
+                midterm_exam=rec.midterm_exam,
+                final_exam=rec.final_exam,
+                behavior_score=rec.behavior_score,
+            )
+        )
+    return out
 
 
 @router.patch("/records/{record_id}", response_model=GradeRecordOut)
@@ -529,7 +601,7 @@ def list_my_lesson_insights(
 
     attention_rows = (
         db.query(StudentAttentionRecord)
-        .filter(StudentAttentionRecord.student_id == student.id, StudentAttentionRecord.attention_score < 60)
+        .filter(StudentAttentionRecord.student_id == student.id, StudentAttentionRecord.attention_score < 25)
         .all()
     )
     low_attention_dates: dict[tuple[int, int], list[str]] = defaultdict(list)
@@ -628,7 +700,7 @@ def list_parent_children_lesson_insights(
 
     attention_rows = (
         db.query(StudentAttentionRecord)
-        .filter(StudentAttentionRecord.student_id.in_(student_ids), StudentAttentionRecord.attention_score < 60)
+        .filter(StudentAttentionRecord.student_id.in_(student_ids), StudentAttentionRecord.attention_score < 25)
         .all()
     )
     low_attention_dates: dict[tuple[int, int, int], list[str]] = defaultdict(list)
@@ -729,7 +801,7 @@ def list_teacher_class_student_details(
         .filter(
             StudentAttentionRecord.class_id == class_id,
             StudentAttentionRecord.student_id.in_(student_ids),
-            StudentAttentionRecord.attention_score < 60,
+            StudentAttentionRecord.attention_score < 25,
         )
         .all()
     )

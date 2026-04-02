@@ -61,7 +61,7 @@ export default function SchoolAcademicRiskPage() {
               <tbody>
                 {records.map((r) => (
                   <tr key={r.id}>
-                    <td>#{r.student_id}</td>
+                    <td>{r.student_name || `#${r.student_id}`}</td>
                     <td>{r.term}</td>
                     <td>{r.homework_avg}</td>
                     <td>{r.quiz_avg}</td>
@@ -96,7 +96,7 @@ export default function SchoolAcademicRiskPage() {
               <tbody>
                 {preds.map((p) => (
                   <tr key={p.id}>
-                    <td>#{p.student_id}</td>
+                    <td>{p.student_name || `#${p.student_id}`}</td>
                     <td>{p.term}</td>
                     <td>{p.predicted_grade}</td>
                     <td>{p.predicted_score}%</td>

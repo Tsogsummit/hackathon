@@ -114,7 +114,7 @@ export default function LessonGradesAttendance({ lessonId, classId, token }) {
   };
 
   return (
-    <div style={{ marginTop: 20 }}>
+    <div>
       <div style={{ marginBottom: 16, display: "flex", gap: 12, alignItems: "center" }}>
         <strong>Бүртгэх өдөр:</strong>
         <input 
@@ -132,7 +132,7 @@ export default function LessonGradesAttendance({ lessonId, classId, token }) {
       {!loading && (
         <>
           {aiMaterials.length > 0 && (
-            <div style={{ marginBottom: 20, padding: 16, border: "1px solid var(--es-border)", borderRadius: 8, background: "rgba(0,0,0,0.02)" }}>
+            <div className="es-ai-material-wrap" style={{ marginBottom: 20, padding: 16, border: "1px solid var(--es-border)", borderRadius: 8 }}>
               <h4 style={{ margin: "0 0 12px 0" }}>🤖 AI туслахын бэлтгэсэн материалууд</h4>
               {aiMaterials.map((m, idx) => (
                 <div key={m.id || idx} style={{ marginBottom: 16 }}>
@@ -200,7 +200,7 @@ export default function LessonGradesAttendance({ lessonId, classId, token }) {
                 ))}
                 {rows.length === 0 && (
                   <tr>
-                    <td colSpan="3" style={{ textAlign: "center", color: "#666" }}>Одоогоор сурагч бүртгэгдээгүй байна.</td>
+                    <td colSpan="3" style={{ textAlign: "center", color: "var(--es-muted)" }}>Одоогоор сурагч бүртгэгдээгүй байна.</td>
                   </tr>
                 )}
               </tbody>

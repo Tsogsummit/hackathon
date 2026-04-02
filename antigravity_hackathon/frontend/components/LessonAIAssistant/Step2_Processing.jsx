@@ -13,7 +13,7 @@ export default function Step2Processing({ activeStep, transcriptPreview, error, 
         style={{
           height: 12,
           borderRadius: 6,
-          background: "#e0e0e0",
+          background: "var(--es-surface-soft)",
           overflow: "hidden",
           marginBottom: 24,
         }}
@@ -22,7 +22,7 @@ export default function Step2Processing({ activeStep, transcriptPreview, error, 
           style={{
             height: "100%",
             width: `${Math.min(100, pct)}%`,
-            background: "linear-gradient(90deg,#1565c0,#42a5f5)",
+            background: "linear-gradient(90deg, var(--es-primary), var(--es-accent))",
             transition: "width 0.4s ease",
           }}
         />
@@ -33,7 +33,7 @@ export default function Step2Processing({ activeStep, transcriptPreview, error, 
             key={s.n}
             style={{
               fontWeight: activeStep === s.n ? 700 : 400,
-              color: activeStep >= s.n ? "#1565c0" : "#999",
+              color: activeStep >= s.n ? "var(--es-primary)" : "var(--es-muted)",
             }}
           >
             Алхам {s.n}/3: {s.label}
@@ -45,24 +45,25 @@ export default function Step2Processing({ activeStep, transcriptPreview, error, 
           style={{
             marginTop: 20,
             padding: 12,
-            background: "#fff",
+            background: "var(--es-card-bg, #fff)",
             borderRadius: 8,
             textAlign: "left",
             maxHeight: 160,
             overflow: "auto",
             fontSize: 14,
-            border: "1px solid #e0e0e0",
+            border: "1px solid var(--es-border)",
+            color: "var(--es-text)",
           }}
         >
           <strong>Текст (урьдчилан харах):</strong>
           <p style={{ whiteSpace: "pre-wrap" }}>{transcriptPreview}</p>
         </div>
       )}
-      {error && <p style={{ color: "#c62828", marginTop: 16 }}>{error}</p>}
+      {error && <p style={{ color: "var(--es-danger)", marginTop: 16 }}>{error}</p>}
       <button
         type="button"
         onClick={onCancel}
-        style={{ marginTop: 24, padding: "10px 24px", borderRadius: 8, border: "1px solid #999", background: "#fff" }}
+        style={{ marginTop: 24, padding: "10px 24px", borderRadius: 8, border: "1px solid var(--es-border)", background: "var(--es-card-bg, #fff)", color: "var(--es-text)", cursor: "pointer" }}
       >
         Цуцлах
       </button>

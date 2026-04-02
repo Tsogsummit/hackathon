@@ -109,18 +109,51 @@ def _build_student_breakdown(student: User, db: Session) -> StudentAcademicBreak
     lessons = db.query(Lesson).filter(Lesson.class_id.in_(class_ids)).all() if class_ids else []
     lesson_by_id = {l.id: l for l in lessons}
 
-    mats = (
-        db.query(LessonMaterial)
-        .filter(
-            LessonMaterial.lesson_id.in_(list(lesson_by_id.keys())) if lesson_by_id else False,
-            LessonMaterial.teacher_approved.is_(True),
-            LessonMaterial.sent_to_students.is_(True),
+    lid_list = list(lesson_by_id.keys()) if lesson_by_id else []
+    mats: list[LessonMaterial] = []
+    if lid_list:
+        mats = (
+            db.query(LessonMaterial)
+            .filter(
+                LessonMaterial.lesson_id.in_(lid_list),
+                LessonMaterial.teacher_approved.is_(True),
+                LessonMaterial.sent_to_students.is_(True),
+            )
+            .order_by(LessonMaterial.created_at.desc())
+            .all()
         )
-        .order_by(LessonMaterial.created_at.desc())
-        .all()
-        if lesson_by_id
-        else []
-    )
+        if not mats:
+            mats = (
+                db.query(LessonMaterial)
+                .filter(
+                    LessonMaterial.lesson_id.in_(lid_list),
+                    LessonMaterial.gemini_status == "completed",
+                )
+                .order_by(LessonMaterial.created_at.desc())
+                .all()
+            )
+
+    def _fmt_homework(hw) -> str:
+        if isinstance(hw, dict):
+            parts = []
+            for k, v in hw.items():
+                parts.append(f"{k}: {v}" if k != "description" else str(v))
+            return " | ".join(parts) if parts else str(hw)
+        if isinstance(hw, list):
+            return "; ".join(str(x) for x in hw)
+        return str(hw)
+
+    def _fmt_exercises(exs) -> str:
+        if isinstance(exs, list):
+            lines = []
+            for i, ex in enumerate(exs, 1):
+                if isinstance(ex, dict):
+                    q = ex.get("question") or ex.get("title") or ex.get("description") or str(ex)
+                    lines.append(f"{i}. {q}")
+                else:
+                    lines.append(f"{i}. {ex}")
+            return "\n".join(lines) if lines else str(exs)
+        return str(exs)
 
     assignments: list[BreakdownItemOut] = []
     self_study: list[BreakdownItemOut] = []
@@ -133,7 +166,7 @@ def _build_student_breakdown(student: User, db: Session) -> StudentAcademicBreak
                     date=_iso(m.created_at),
                     class_name=cls_name,
                     lesson_title=les.title if les else None,
-                    value=str(m.homework),
+                    value=_fmt_homework(m.homework),
                 )
             )
         if m.exercises:
@@ -142,7 +175,7 @@ def _build_student_breakdown(student: User, db: Session) -> StudentAcademicBreak
                     date=_iso(m.created_at),
                     class_name=cls_name,
                     lesson_title=les.title if les else None,
-                    value=str(m.exercises),
+                    value=_fmt_exercises(m.exercises),
                 )
             )
 

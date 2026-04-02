@@ -14,58 +14,58 @@ export default function Step3ReviewEdit({
   const [showRaw, setShowRaw] = useState(false);
 
   return (
-    <div style={{ maxWidth: 900, margin: "0 auto" }}>
+    <div style={{ maxWidth: 920, margin: "0 auto" }}>
       <MaterialsEditor value={materials} onChange={setMaterials} />
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 20 }}>
-        <button
-          type="button"
-          disabled={saving}
-          onClick={onApproveSave}
-          style={{
-            padding: "14px 28px",
-            background: "#2e7d32",
-            color: "#fff",
-            border: "none",
-            borderRadius: 8,
-            fontWeight: 700,
-            cursor: saving ? "wait" : "pointer",
-          }}
-        >
-          Баталгаажуулж хадгалах
+
+      <div
+        style={{
+          marginTop: 24,
+          padding: "1rem 1.1rem",
+          borderRadius: "var(--radius-sm)",
+          border: "1px solid var(--es-border)",
+          background: "var(--es-surface-soft)",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: 10,
+          alignItems: "center",
+        }}
+      >
+        <button type="button" disabled={saving} className="es-btn es-btn-primary" onClick={onApproveSave}>
+          {saving ? "Хадгалж байна…" : "Баталгаажуулж хадгалах"}
         </button>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={onRegenerate}
-          style={{ padding: "14px 20px", borderRadius: 8, border: "1px solid #1565c0", background: "#fff" }}
-        >
-          Дахин үүсгэх
+        <button type="button" disabled={busy} className="es-btn es-btn-secondary" onClick={onRegenerate}>
+          {busy ? "Түр хүлээнэ үү…" : "Дахин үүсгэх"}
         </button>
-        <button type="button" onClick={onNext} style={{ padding: "14px 20px", borderRadius: 8, background: "#1565c0", color: "#fff", border: "none" }}>
-          Сурагчдад илгээх алхам руу
+        <button type="button" className="es-btn es-btn-primary" onClick={onNext} style={{ marginLeft: "auto" }}>
+          Сурагчдад илгээх →
         </button>
       </div>
+
       <button
         type="button"
         onClick={() => setShowRaw(!showRaw)}
-        style={{ marginTop: 16, width: "100%", padding: 10, background: "#eceff1", border: "none", borderRadius: 8 }}
+        className="es-btn es-btn-ghost"
+        style={{ width: "100%", marginTop: 14, justifyContent: "center" }}
       >
-        {showRaw ? "▼" : "▶"} Явцын бүрэн текст
+        {showRaw ? "▼" : "▶"} Явцын бүрэн текст (STT)
       </button>
       {showRaw && (
         <pre
           style={{
-            marginTop: 8,
-            padding: 12,
-            background: "#fff",
-            borderRadius: 8,
-            maxHeight: 200,
+            marginTop: 10,
+            padding: 14,
+            background: "var(--es-card-bg)",
+            color: "var(--es-text)",
+            borderRadius: "var(--radius-sm)",
+            border: "1px solid var(--es-border)",
+            maxHeight: 220,
             overflow: "auto",
-            fontSize: 13,
+            fontSize: "0.82rem",
             whiteSpace: "pre-wrap",
+            fontFamily: "ui-monospace, monospace",
           }}
         >
-          {transcriptText}
+          {transcriptText || "—"}
         </pre>
       )}
     </div>

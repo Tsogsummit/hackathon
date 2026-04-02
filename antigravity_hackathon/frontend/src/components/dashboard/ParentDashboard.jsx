@@ -1,13 +1,27 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { apiFetch } from "../../api/client.js";
 import { useAuthStore } from "../../store/authStore.js";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
+  PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend
 } from "recharts";
+
+const PIE_COLORS = [
+  "#6366f1",
+  "#22c55e",
+  "#f59e0b",
+  "#ef4444",
+  "#06b6d4",
+  "#8b5cf6",
+  "#84cc16",
+  "#f97316",
+  "#ec4899",
+  "#14b8a6",
+];
 
 export default function ParentDashboard() {
   const token = useAuthStore((s) => s.token);
-  const [childrenInsights, setChildrenInsights] = useState([]);
+  const [childrenPredictions, setChildrenPredictions] = useState([]);
+  const [lessonInsights, setLessonInsights] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedChild, setSelectedChild] = useState(null);
 
@@ -15,11 +29,14 @@ export default function ParentDashboard() {
     let off = false;
     const load = async () => {
       try {
-        const data = await apiFetch("/profile/parent/children-predictions", { token });
-        // NOTE: we use predictions or insights endpoint
+        const [preds, insights] = await Promise.all([
+          apiFetch("/profile/parent/children-predictions", { token }),
+          apiFetch("/grades/parent/children/lesson-insights", { token }),
+        ]);
         if (!off) {
-          setChildrenInsights(data);
-          if (data.length > 0) setSelectedChild(data[0].student_id);
+          setChildrenPredictions(Array.isArray(preds) ? preds : []);
+          setLessonInsights(Array.isArray(insights) ? insights : []);
+          if (preds.length > 0) setSelectedChild(preds[0].student_id);
         }
       } catch (e) {
         console.error("Failed to load parent insights", e);
@@ -31,31 +48,57 @@ export default function ParentDashboard() {
     return () => { off = true; };
   }, [token]);
 
+  const activeData =
+    childrenPredictions.find((c) => String(c.student_id) === String(selectedChild)) || childrenPredictions[0] || null;
+
+  const latestGradeText = activeData?.predicted_grade
+    ? `${activeData.predicted_grade} (${Number(activeData.predicted_score || 0).toFixed(1)}%)`
+    : "-";
+
+  const allChildrenSubjectAverages = useMemo(() => {
+    const latestByChildSubject = new Map();
+    for (const row of lessonInsights) {
+      if (row?.student_id == null || !row?.class_name || row?.predicted_score == null) continue;
+      const key = `${row.student_id}::${row.class_name}`;
+      const prev = latestByChildSubject.get(key);
+      if (!prev || (row.term || "") > (prev.term || "")) {
+        latestByChildSubject.set(key, row);
+      }
+    }
+
+    const aggregate = new Map();
+    for (const row of latestByChildSubject.values()) {
+      const prev = aggregate.get(row.class_name) || { total: 0, count: 0 };
+      aggregate.set(row.class_name, {
+        total: prev.total + Number(row.predicted_score),
+        count: prev.count + 1,
+      });
+    }
+
+    return Array.from(aggregate.entries())
+      .map(([subject, value]) => ({
+        subject,
+        score: Number((value.total / Math.max(1, value.count)).toFixed(1)),
+      }))
+      .sort((a, b) => b.score - a.score);
+  }, [lessonInsights]);
+
   if (loading) return <div className="es-skeleton">Ачаалж байна...</div>;
-  if (!childrenInsights || childrenInsights.length === 0) {
+  if (!childrenPredictions || childrenPredictions.length === 0) {
     return <div className="es-section"><p className="es-empty">Хүүхдийн мэдээлэл олдсонгүй.</p></div>;
   }
 
-  const activeData = childrenInsights.find(c => c.student_id === selectedChild) || childrenInsights[0];
-
-  const mockGrades = [
-    { subject: "Математик", score: activeData?.predicted_score || 88 },
-    { subject: "Монгол хэл", score: 92 },
-    { subject: "Физик", score: 79 },
-    { subject: "Мэдээлэл зүй", score: 95 }
-  ];
-
   return (
-    <div className="es-section fade-in">
+    <div className="es-dashboard-stack fade-in">
       <div className="es-toolbar" style={{ marginBottom: "1.5rem" }}>
         <h2 className="es-section-title" style={{ margin: 0 }}>Хүүхдийн сурлагын явц</h2>
         <select
           className="es-select"
           style={{ width: "250px", marginLeft: "auto" }}
           value={selectedChild || ""}
-          onChange={(e) => setSelectedChild(e.target.value)}
+          onChange={(e) => setSelectedChild(String(e.target.value))}
         >
-          {childrenInsights.map((c) => (
+          {childrenPredictions.map((c) => (
             <option key={c.student_id} value={c.student_id}>
               {c.student_name}
             </option>
@@ -66,29 +109,46 @@ export default function ParentDashboard() {
       <div className="es-kpi-grid">
         <div className="es-kpi">
           <div className="es-kpi-label">Ерөнхий дүнгийн таамаг</div>
-          <div className="es-kpi-value">{activeData?.predicted_score || "88"}%</div>
+          <div className="es-kpi-value">{activeData?.predicted_score != null ? `${Number(activeData.predicted_score).toFixed(1)}%` : "-"}</div>
         </div>
         <div className="es-kpi">
-          <div className="es-kpi-label">Сүүлийн шалгалт</div>
-          <div className="es-kpi-value">А (92%)</div>
+          <div className="es-kpi-label">Сүүлийн таамагласан үнэлгээ</div>
+          <div className="es-kpi-value">{latestGradeText}</div>
         </div>
         <div className="es-kpi">
-          <div className="es-kpi-label">Даалгавар гүйцэтгэл</div>
-          <div className="es-kpi-value" style={{color: "var(--es-success)"}}>100%</div>
+          <div className="es-kpi-label">Эрсдэлийн түвшин</div>
+          <div className="es-kpi-value" style={{ color: activeData?.risk_level === "high" ? "var(--es-danger)" : "var(--es-success)" }}>
+            {activeData?.risk_level || "-"}
+          </div>
         </div>
       </div>
 
-      <div className="es-chart-container" style={{height: "300px"}}>
-        <h3 className="es-label">Хичээл бүрийн дундаж үзүүлэлт</h3>
-        <ResponsiveContainer width="100%" height="85%">
-          <BarChart data={mockGrades} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--es-border)" />
-            <XAxis dataKey="subject" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-            <Tooltip cursor={{ fill: "rgba(99, 102, 241, 0.05)" }} />
-            <Bar dataKey="score" fill="var(--es-accent)" radius={[6, 6, 0, 0]} barSize={40} />
-          </BarChart>
-        </ResponsiveContainer>
+      <div className="es-chart-container es-chart-card" style={{ height: "360px" }}>
+        <h3 className="es-label">Хүүхдүүдийн бүх хичээлийн дундаж үнэлгээ</h3>
+        {allChildrenSubjectAverages.length === 0 ? (
+          <p className="es-empty">Хүүхдүүдийн хичээлийн дундаж мэдээлэл алга.</p>
+        ) : (
+          <ResponsiveContainer width="100%" height="85%">
+            <PieChart>
+              <Pie
+                data={allChildrenSubjectAverages}
+                dataKey="score"
+                nameKey="subject"
+                cx="40%"
+                cy="50%"
+                outerRadius={105}
+                innerRadius={48}
+                paddingAngle={2}
+              >
+                {allChildrenSubjectAverages.map((entry, idx) => (
+                  <Cell key={entry.subject} fill={PIE_COLORS[idx % PIE_COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value) => [`${Number(value).toFixed(1)}%`, "Дундаж"]} />
+              <Legend layout="vertical" align="right" verticalAlign="middle" />
+            </PieChart>
+          </ResponsiveContainer>
+        )}
       </div>
     </div>
   );

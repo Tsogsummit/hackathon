@@ -47,11 +47,13 @@ def main():
             db.refresh(admin)
 
         teacher_objs = []
+        teacher_names = ["Батбаяр багш", "Саруул багш", "Нарантуяа багш"]
         for i, (code, sname) in enumerate(subject_data):
             t_email = f"teacher{i+1}@test.mn"
             t = db.query(User).filter(User.email == t_email).first()
             if not t:
-                t = User(email=t_email, full_name=f"{sname} Багш", password_hash=hash_password("123456"), role="teacher")
+                # Use personal teacher display names (not subject names).
+                t = User(email=t_email, full_name=teacher_names[i] if i < len(teacher_names) else f"{sname} Багш", password_hash=hash_password("123456"), role="teacher")
                 db.add(t)
                 db.commit()
                 db.refresh(t)

@@ -29,9 +29,9 @@ export default function LoginPage() {
     <div style={{ minHeight: "100vh", display: "grid", placeItems: "center", padding: 20 }}>
       <div className="es-section" style={{ width: "100%", maxWidth: 440 }}>
         <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "var(--es-primary-dark)" }}>EduSmart MN</div>
+          <div style={{ fontSize: "1.9rem", fontWeight: 800, color: "var(--es-primary-dark)" }}>Stuto</div>
           <p className="es-empty" style={{ marginTop: 8 }}>
-            Smart School Management Platform
+            AI School Management
           </p>
         </div>
 

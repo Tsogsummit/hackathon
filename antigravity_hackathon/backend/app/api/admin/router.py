@@ -1,8 +1,9 @@
 from typing import Annotated
+import re
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from pydantic import BaseModel, ConfigDict, Field
-from sqlalchemy import select
+from sqlalchemy import case, func, select
 from sqlalchemy.orm import Session
 from jose import JWTError
 
@@ -15,6 +16,7 @@ from app.models import (
     SchoolClass,
     StudentAttendanceRecord,
     StudentFaceProfile,
+    StudentGradePrediction,
     UnknownFaceLog,
     User,
     class_enrollment,
@@ -54,6 +56,11 @@ class SeedDataResponse(BaseModel):
     enrollments_created: int
     parent_links_created: int
     lessons_created: int
+
+
+class FixTeacherNamesResponse(BaseModel):
+    updated_teachers: int
+    skipped_teachers: int
 
 
 class FullSchoolSeedResponse(BaseModel):
@@ -99,6 +106,35 @@ class StudentFaceProfileAdminOut(BaseModel):
 
 class ApplyUnknownFaceIn(BaseModel):
     student_id: int
+
+
+class AdminAttendanceTrendItem(BaseModel):
+    label: str
+    attendance: float
+
+
+class AdminDashboardStatsOut(BaseModel):
+    totalStudents: int
+    totalTeachers: int
+    averageAttendance: str
+    overallRisk: str
+    attendanceTrend: list[AdminAttendanceTrendItem]
+
+
+def _attendance_label(value: float) -> str:
+    if value >= 95:
+        return "Бага"
+    if value >= 85:
+        return "Дунд"
+    return "Өндөр"
+
+
+def _risk_label_from_predictions(high_ratio: float) -> str:
+    if high_ratio >= 0.30:
+        return "Өндөр"
+    if high_ratio >= 0.15:
+        return "Дунд"
+    return "Бага"
 
 
 @router.get("/users", response_model=list[AdminUserOut])
@@ -311,6 +347,99 @@ def seed_demo_data(
         enrollments_created=enrollments_created,
         parent_links_created=parent_links_created,
         lessons_created=lessons_created,
+    )
+
+
+@router.post("/fix-teacher-display-names", response_model=FixTeacherNamesResponse)
+def fix_teacher_display_names(
+    _: Annotated[User, Depends(require_admin)],
+    db: Session = Depends(get_db),
+) -> FixTeacherNamesResponse:
+    """
+    Some seed scripts create teacher.full_name like "Математик Багш".
+    This endpoint backfills a nicer display name for demo teachers based on email: teacher{N}@... .
+    """
+    name_by_idx = {
+        1: "Батбаяр багш",
+        2: "Саруул багш",
+        3: "Нарантуяа багш",
+    }
+
+    teachers = db.query(User).filter(User.role == "teacher", User.is_active.is_(True)).all()
+    updated = 0
+    skipped = 0
+
+    for t in teachers:
+        if not t.email:
+            skipped += 1
+            continue
+        m = re.match(r"^teacher(\d+)@.+$", str(t.email).strip().lower())
+        if not m:
+            skipped += 1
+            continue
+        idx = int(m.group(1))
+        if idx not in name_by_idx:
+            skipped += 1
+            continue
+        desired = name_by_idx[idx]
+        current = (t.full_name or "").strip()
+        if current != desired:
+            t.full_name = desired
+            updated += 1
+
+    db.commit()
+    return FixTeacherNamesResponse(updated_teachers=updated, skipped_teachers=skipped)
+
+
+@router.get("/dashboard-stats", response_model=AdminDashboardStatsOut)
+def admin_dashboard_stats(
+    user: Annotated[User, Depends(get_current_user)],
+    db: Session = Depends(get_db),
+) -> AdminDashboardStatsOut:
+    if user.role not in {"admin", "principal"}:
+        raise HTTPException(status_code=403, detail="Зөвхөн админ эсвэл захирал")
+
+    total_students = db.query(User.id).filter(User.role == "student", User.is_active.is_(True)).count()
+    total_teachers = db.query(User.id).filter(User.role == "teacher", User.is_active.is_(True)).count()
+
+    attendance_rows = (
+        db.query(
+            StudentAttendanceRecord.date,
+            func.count(StudentAttendanceRecord.id).label("total_count"),
+            func.sum(
+                case(
+                    (StudentAttendanceRecord.status.in_(["present", "late", "excused"]), 1),
+                    else_=0,
+                )
+            ).label("attended_count"),
+        )
+        .group_by(StudentAttendanceRecord.date)
+        .order_by(StudentAttendanceRecord.date.desc())
+        .limit(8)
+        .all()
+    )
+
+    trend: list[AdminAttendanceTrendItem] = []
+    rates: list[float] = []
+    for row in reversed(attendance_rows):
+        total = int(row.total_count or 0)
+        attended = int(row.attended_count or 0)
+        rate = round((attended / total) * 100, 1) if total > 0 else 0.0
+        rates.append(rate)
+        trend.append(AdminAttendanceTrendItem(label=str(row.date), attendance=rate))
+    average_attendance_value = round(sum(rates) / len(rates), 1) if rates else 0.0
+
+    prediction_total = db.query(StudentGradePrediction.id).count()
+    prediction_high = db.query(StudentGradePrediction.id).filter(StudentGradePrediction.risk_level == "high").count()
+    high_ratio = (prediction_high / prediction_total) if prediction_total else 0.0
+    overall_risk = _risk_label_from_predictions(high_ratio) if prediction_total else _attendance_label(average_attendance_value)
+
+    return AdminDashboardStatsOut(
+        totalStudents=total_students,
+        totalTeachers=total_teachers,
+        averageAttendance=f"{average_attendance_value}%",
+        overallRisk=overall_risk,
+        attendanceTrend=trend,
     )
 
 

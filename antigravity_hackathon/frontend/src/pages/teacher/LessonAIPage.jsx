@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import LessonAIAssistant from "@components/LessonAIAssistant/index.jsx";
 import LessonGradesAttendance from "../../components/LessonGradesAttendance.jsx";
@@ -12,11 +12,19 @@ export default function LessonAIPage() {
   const [lessons, setLessons] = useState([]);
   const [lessonId, setLessonId] = useState(null);
   const [err, setErr] = useState("");
-  const [students, setStudents] = useState([]);
   const [tab, setTab] = useState("ai");
 
   const selectedLesson = lessons.find((l) => l.id === lessonId);
   const classId = selectedLesson?.class_id;
+
+  const lessonSummary = useMemo(() => {
+    if (!selectedLesson) return null;
+    return {
+      title: selectedLesson.title || `Хичээл #${selectedLesson.id}`,
+      className: selectedLesson.class_name || "",
+      subject: selectedLesson.subject_name || "",
+    };
+  }, [selectedLesson]);
 
   useEffect(() => {
     let cancelled = false;
@@ -37,17 +45,30 @@ export default function LessonAIPage() {
   }, [token]);
 
   return (
-    <div>
-      <h1 className="es-page-title">Хичээлийн AI туслах</h1>
-      <p className="es-page-desc">
-        Эхлээд өөрийн хичээлээ сонгоно уу. Дараа нь аудио оруулж, текст болгож, сурагчдад зориулсан материал үүсгэнэ.
-      </p>
+    <div className="es-page fade-in es-lesson-ai-workbench">
+      <header>
+        <h1 className="es-page-title">Хичээлийн AI туслах</h1>
+        <p className="es-page-desc">
+          Нэг цонхноос: <strong>дуу бичлэг → текст → материал</strong> үүсгэж, сурагчдаа илгээх, мөн{" "}
+          <strong>өдрийн ирц / даалгавар</strong> болон <strong>улирлын шалгалтын оноо</strong> оруулах.
+        </p>
+      </header>
 
-      {err && <p style={{ color: "var(--es-danger)", marginBottom: 16 }}>{err}</p>}
+      {err && <p className="es-alert es-alert-danger">{err}</p>}
 
-      <div className="es-card" style={{ marginBottom: 20, maxWidth: 480 }}>
-        <label className="es-label">Аль хичээл дээр ажиллах вэ?</label>
-        <select className="es-select" value={lessonId ?? ""} onChange={(e) => setLessonId(Number(e.target.value))}>
+      <section className="es-lesson-picker-card" aria-label="Хичээл сонгох">
+        <label className="es-label" htmlFor="lesson-ai-lesson-select">
+          Аль хичээл дээр ажиллах вэ?
+        </label>
+        <p style={{ margin: "0 0 12px", fontSize: "0.85rem", color: "var(--es-muted)", lineHeight: 1.45 }}>
+          Энд сонгосон хичээлд л аудио илгээгдэж, материал хадгалагдана. Өөр хичээл рүү шилжихэд доорх табууд тухайн хичээлд холбогдоно.
+        </p>
+        <select
+          id="lesson-ai-lesson-select"
+          className="es-select"
+          value={lessonId ?? ""}
+          onChange={(e) => setLessonId(Number(e.target.value))}
+        >
           {lessons.length === 0 && <option value="">— Хичээл алга (админ холбоно) —</option>}
           {lessons.map((l) => (
             <option key={l.id} value={l.id}>
@@ -55,83 +76,86 @@ export default function LessonAIPage() {
             </option>
           ))}
         </select>
-      </div>
+        {lessonSummary && (
+          <div
+            style={{
+              marginTop: 14,
+              padding: "10px 14px",
+              borderRadius: 10,
+              background: "var(--es-accent-soft)",
+              border: "1px solid var(--es-border)",
+              fontSize: "0.88rem",
+            }}
+          >
+            <span style={{ fontWeight: 700, color: "var(--es-text)" }}>Сонгогдсон: </span>
+            <span style={{ color: "var(--es-muted)" }}>
+              {lessonSummary.title}
+              {lessonSummary.className ? ` · ${lessonSummary.className}` : ""}
+              {lessonSummary.subject ? ` · ${lessonSummary.subject}` : ""}
+            </span>
+          </div>
+        )}
+      </section>
 
       {lessonId ? (
         <>
-          <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+          <nav className="es-segment-tabs" aria-label="Хэсэг сонгох">
             <button
-               className={`es-btn ${tab === "ai" ? "es-btn-primary" : "es-btn-secondary"}`}
-               onClick={() => setTab("ai")}
-             >
-               AI Туслах
-             </button>
-             <button
-               className={`es-btn ${tab === "daily" || tab === "grades" ? "es-btn-primary" : "es-btn-secondary"}`}
-               onClick={() => setTab("daily")}
-               disabled={!classId}
-             >
-               Өдөр тутмын (Ирц, Даалгавар)
-             </button>
-             <button
-               className={`es-btn ${tab === "term" ? "es-btn-primary" : "es-btn-secondary"}`}
-               onClick={() => setTab("term")}
-               disabled={!classId}
-             >
-               Улирлын дүн & Шалгалт
-             </button>
-           </div>
+              type="button"
+              className={`es-segment-tab ${tab === "ai" ? "is-active" : ""}`}
+              onClick={() => setTab("ai")}
+            >
+              <span className="es-segment-tab__title">AI туслах</span>
+              <span className="es-segment-tab__hint">Аудио, текст, материал, сурагчдад илгээх</span>
+            </button>
+            <button
+              type="button"
+              className={`es-segment-tab ${tab === "daily" ? "is-active" : ""}`}
+              onClick={() => setTab("daily")}
+              disabled={!classId}
+            >
+              <span className="es-segment-tab__title">Өдөр тутам</span>
+              <span className="es-segment-tab__hint">Ирц, өдрийн даалгаварын оноо</span>
+            </button>
+            <button
+              type="button"
+              className={`es-segment-tab ${tab === "term" ? "is-active" : ""}`}
+              onClick={() => setTab("term")}
+              disabled={!classId}
+            >
+              <span className="es-segment-tab__title">Улирал / шалгалт</span>
+              <span className="es-segment-tab__hint">Quiz, бие даалт, мидтерм, эцсийн</span>
+            </button>
+          </nav>
 
-          {tab === "ai" && (
-            <>
-              <div className="es-card" style={{ marginBottom: 12 }}>
-                <strong>Энэ хичээлтэй холбогдсон сурагчид</strong>
-                <p style={{ margin: "6px 0 10px", color: "var(--es-muted)" }}>
-                  Хичээл-сурагч холбоо нь ангийн enrollment-оос автоматаар татагдана.
-                </p>
-                <button
-                  type="button"
-                  className="es-btn es-btn-secondary"
-                  onClick={async () => {
-                    if (students.length > 0) {
-                      setStudents([]);
-                    } else {
-                      try {
-                        const out = await apiFetch(`/teacher/lessons/${lessonId}/students`, { token });
-                        setStudents(out);
-                      } catch (e) {
-                        setErr(e?.message || "Сурагчид ачаалж чадсангүй");
-                      }
-                    }
-                  }}
-                >
-                  {students.length > 0 ? "Сурагчийн жагсаалт нуух" : "Сурагчийн жагсаалт харах"}
-                </button>
-                {students.length > 0 && (
-                  <div style={{ marginTop: 10, display: "grid", gap: 6 }}>
-                    {students.slice(0, 12).map((s) => (
-                      <div key={s.id} style={{ border: "1px solid var(--es-border)", borderRadius: 8, padding: "6px 8px" }}>
-                        {s.full_name || s.email}
-                      </div>
-                    ))}
-                    {students.length > 12 && <p style={{ margin: 0, color: "var(--es-muted)" }}>... нийт {students.length} сурагч</p>}
-                  </div>
-                )}
-              </div>
-              <LessonAIAssistant lessonId={lessonId} authToken={token} />
-            </>
-          )}
+          {tab === "ai" && <LessonAIAssistant lessonId={lessonId} authToken={token} />}
 
-          {(tab === "daily" || tab === "grades") && classId && (
-            <LessonGradesAttendance lessonId={lessonId} classId={classId} token={token} />
+          {tab === "daily" && classId && (
+            <section className="es-lesson-subpanel">
+              <h2 className="es-lesson-subpanel__title">Өдрийн ирц ба даалгавар</h2>
+              <p className="es-lesson-subpanel__desc">
+                Сонгосон өдөрт хичээлийн ирцийг тэмдэглэж, өдрийн гэрийн даалгаврын оноо оруулна. Хадгалахад ирц болон оноо нэг дор серверт бичигдэнэ.
+              </p>
+              <LessonGradesAttendance lessonId={lessonId} classId={classId} token={token} />
+            </section>
           )}
 
           {tab === "term" && classId && (
-            <LessonTermGrades classId={classId} token={token} />
+            <section className="es-lesson-subpanel">
+              <h2 className="es-lesson-subpanel__title">Улирлын оноо (дүнгийн таамагт нөлөөлнө)</h2>
+              <p className="es-lesson-subpanel__desc">
+                Сурагч бүрт шалгалт, бие даалт, мидтерм, эцсийн шалгалтын оноо оруулаад хадгалбал уналтын эрсдэлийн таамаг шинэчлэгдэнэ.
+              </p>
+              <LessonTermGrades classId={classId} token={token} />
+            </section>
           )}
         </>
       ) : (
-        <div className="es-card">Админ танд хичээл хуваарилаагүй байна. &quot;Анги &amp; хичээл тохируулах&quot; хэсгээр үүсгүүлнэ үү.</div>
+        <div className="es-card">
+          <p style={{ margin: 0, color: "var(--es-muted)", lineHeight: 1.6 }}>
+            Танд хуваарилагдсан хичээл алга. Админ &quot;Анги &amp; хичээл тохируулах&quot; хэсгээр хичээл холбогдохыг шийднэ үү.
+          </p>
+        </div>
       )}
     </div>
   );

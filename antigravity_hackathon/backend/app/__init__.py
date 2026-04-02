@@ -1,1 +1,1 @@
-# EduSmart MN — Lesson AI Assistant backend
+# Stuto — Lesson AI Assistant backend

@@ -1,8 +1,9 @@
 import base64
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Annotated, Literal
+import json
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
@@ -77,6 +78,25 @@ class AttendanceItemOut(BaseModel):
     student_name: str
     status: str
     note: str | None
+
+
+class AttendanceWeekStatusOut(BaseModel):
+    status: str
+    note: str | None = None
+
+
+class AttendanceWeekStudentOut(BaseModel):
+    student_id: int
+    student_name: str
+    statuses: list[AttendanceWeekStatusOut]
+
+
+class AttendanceWeekOut(BaseModel):
+    class_name: str
+    week_start: str
+    week_end: str
+    days: list[str]
+    students: list[AttendanceWeekStudentOut]
 
 
 class LessonStudentOut(BaseModel):
@@ -183,6 +203,7 @@ class DashboardStatsOut(BaseModel):
     attendanceLate: int
     avgGrade: float
     avgAttention: float
+    hasAttentionData: bool
     missingExams: int
     lowAttentionStudents: list[LowAttentionStudentOut]
     materialHasLatest: bool
@@ -295,7 +316,16 @@ def lesson_face_roster(
     out: list[FaceRosterItemOut] = []
     for s in students:
         p = profile_by_student.get(s.id)
-        image_url = f"/api/teacher/students/{s.id}/face-image" if p else None
+        if p:
+            # If image_path is a remote URL, expose it directly for the frontend.
+            # Otherwise expose our own API endpoint.
+            img_path = (p.image_path or "").strip()
+            if img_path.startswith("http://") or img_path.startswith("https://"):
+                image_url = img_path
+            else:
+                image_url = f"/api/teacher/students/{s.id}/face-image"
+        else:
+            image_url = None
         out.append(
             FaceRosterItemOut(
                 student_id=s.id,
@@ -394,7 +424,7 @@ def get_student_face_image(
 ):
     from pathlib import Path
 
-    from fastapi.responses import FileResponse
+    from fastapi.responses import FileResponse, RedirectResponse
 
     profile = db.query(StudentFaceProfile).filter(StudentFaceProfile.student_id == student_id).first()
     if not profile:
@@ -407,7 +437,12 @@ def get_student_face_image(
     )
     if not student_in_my_class:
         raise HTTPException(status_code=403, detail="Энэ сурагчийн зурагт эрхгүй")
-    p = Path(profile.image_path)
+    # Support remote image paths too (frontend can load the image directly).
+    img_path = (profile.image_path or "").strip()
+    if img_path.startswith("http://") or img_path.startswith("https://"):
+        return RedirectResponse(url=img_path)
+
+    p = Path(img_path)
     if not p.is_absolute():
         p = Path.cwd() / p
     if not p.exists() or not p.is_file():
@@ -547,6 +582,9 @@ def report_attention(
         raise HTTPException(status_code=400, detail="Энэ ангид сурагч бүртгэгдээгүй байна")
 
     seen: set[int] = set()
+    # Notifications should be sent only for severe low attention.
+    # Requested: "60-аас доош бус 25-аас доош" үед илгээх.
+    notify_threshold = 25.0
     low_rows: list[StudentAttentionIn] = []
     saved = 0
     for rec in body.records:
@@ -562,17 +600,28 @@ def report_attention(
             student_id=rec.student_id,
             attention_score=rec.attention_score,
             notes=rec.notes,
-            reported_to_teacher=rec.attention_score < 60,
-            reported_to_school=rec.attention_score < 60,
+            reported_to_teacher=rec.attention_score < notify_threshold,
+            reported_to_school=rec.attention_score < notify_threshold,
         )
         db.add(row)
         saved += 1
-        if rec.attention_score < 60:
+        if rec.attention_score < notify_threshold:
             low_rows.append(rec)
 
     notified_teacher_count = 0
     notified_school_count = 0
     if low_rows:
+        # Create attention distribution bins for a pie chart:
+        # 80+ | 60-79 | 40-59 | 20-39 | <20
+        all_scores = [float(r.attention_score) for r in body.records]
+        bins = {
+            "80+": sum(1 for s in all_scores if s >= 80.0),
+            "60-79": sum(1 for s in all_scores if s >= 60.0 and s < 80.0),
+            "40-59": sum(1 for s in all_scores if s >= 40.0 and s < 60.0),
+            "20-39": sum(1 for s in all_scores if s >= 20.0 and s < 40.0),
+            "<20": sum(1 for s in all_scores if s < 20.0),
+        }
+
         students = db.query(User).filter(User.id.in_([r.student_id for r in low_rows])).all()
         student_map = {s.id: (s.full_name or s.email) for s in students}
         details = ", ".join(
@@ -580,8 +629,11 @@ def report_attention(
             for r in sorted(low_rows, key=lambda x: x.attention_score)
         )
 
-        teacher_title = f"Анхаарал 60%-иас доош ({len(low_rows)})"
-        teacher_body = f"Хичээл: {lesson.title or lesson.id}. Сурагчид: {details}"
+        teacher_title = f"Анхаарал 25%-иас доош ({len(low_rows)})"
+        teacher_body = (
+            f"ATTENTION_BINS:{json.dumps(bins, ensure_ascii=False)}\n"
+            f"Хичээл: {lesson.title or lesson.id}. Сурагчид: {details}"
+        )
         db.add(Notification(user_id=teacher.id, title=teacher_title, body=teacher_body, read=False))
         notified_teacher_count = 1
 
@@ -591,8 +643,9 @@ def report_attention(
             .order_by(User.id)
             .all()
         )
-        school_title = f"Сургуулийн анхааруулга: {len(low_rows)} сурагч < 60%"
+        school_title = f"Сургуулийн анхааруулга: {len(low_rows)} сурагч < 25%"
         school_body = (
+            f"ATTENTION_BINS:{json.dumps(bins, ensure_ascii=False)}\n"
             f"Багш: {teacher.full_name or teacher.email}; "
             f"анги: {lesson.class_id}; хичээл: {lesson.title or lesson.id}; "
             f"дэлгэрэнгүй: {details}"
@@ -647,6 +700,87 @@ def get_lesson_attendance(
             )
         )
     return out
+
+
+@router.get("/lessons/{lesson_id}/attendance-week", response_model=AttendanceWeekOut)
+def get_lesson_attendance_week(
+    lesson_id: int,
+    teacher: Annotated[User, Depends(require_teacher)],
+    db: Session = Depends(get_db),
+    date_filter: str | None = Query(None),
+) -> AttendanceWeekOut:
+    """
+    Returns weekly attendance grid for the given lesson's class.
+    - week_start is Monday
+    - default day status is "present" when record is missing (same as /attendance)
+    """
+    from datetime import datetime as _dt
+
+    target_date = _dt.strptime(date_filter, "%Y-%m-%d").date() if date_filter else _dt.today().date()
+    week_start = target_date - timedelta(days=target_date.weekday())
+    week_end = week_start + timedelta(days=6)
+
+    lesson = db.query(Lesson).filter(Lesson.id == lesson_id, Lesson.teacher_id == teacher.id).first()
+    if not lesson:
+        raise HTTPException(status_code=404, detail="Хичээл олдсонгүй")
+
+    class_obj = db.query(SchoolClass).filter(SchoolClass.id == lesson.class_id).first()
+    class_name = class_obj.name if class_obj else f"#{lesson.class_id}"
+
+    enrolled_rows = (
+        db.query(User)
+        .join(class_enrollment, class_enrollment.c.student_id == User.id)
+        .filter(class_enrollment.c.class_id == lesson.class_id, User.role == "student")
+        .order_by(User.full_name.asc().nulls_last(), User.id.asc())
+        .all()
+    )
+    if not enrolled_rows:
+        return AttendanceWeekOut(
+            class_name=class_name,
+            week_start=week_start.isoformat(),
+            week_end=week_end.isoformat(),
+            days=[(week_start + timedelta(days=i)).isoformat() for i in range(7)],
+            students=[],
+        )
+
+    days = [(week_start + timedelta(days=i)).isoformat() for i in range(7)]
+    day_to_date = [(_dt.fromisoformat(d)).date() for d in days]
+
+    existing = (
+        db.query(StudentAttendanceRecord)
+        .filter(
+            StudentAttendanceRecord.lesson_id == lesson.id,
+            StudentAttendanceRecord.date >= week_start,
+            StudentAttendanceRecord.date <= week_end,
+        )
+        .all()
+    )
+    # index: (student_id, date) -> record
+    rec_by_key: dict[tuple[int, object], StudentAttendanceRecord] = {}
+    for r in existing:
+        rec_by_key[(r.student_id, r.date)] = r
+
+    students: list[AttendanceWeekStudentOut] = []
+    for st in enrolled_rows:
+        statuses: list[AttendanceWeekStatusOut] = []
+        for d in day_to_date:
+            rec = rec_by_key.get((st.id, d))
+            statuses.append(AttendanceWeekStatusOut(status=rec.status if rec else "present", note=rec.note if rec else None))
+        students.append(
+            AttendanceWeekStudentOut(
+                student_id=st.id,
+                student_name=st.full_name or st.email,
+                statuses=statuses,
+            )
+        )
+
+    return AttendanceWeekOut(
+        class_name=class_name,
+        week_start=week_start.isoformat(),
+        week_end=week_end.isoformat(),
+        days=days,
+        students=students,
+    )
 
 
 @router.post("/lessons/{lesson_id}/attendance", response_model=AttendanceSaveOut)
@@ -858,8 +992,9 @@ def teacher_dashboard_stats(
     low_attention_map = {}
     if attentions:
         avg_attention = sum(a.attention_score for a in attentions) / len(attentions)
+        # "Low attention" definition (requested: make it 25 instead of 60)
         for a in attentions:
-            if a.attention_score < 60.0:
+            if a.attention_score < 25.0:
                 low_attention_map[a.student_id] = low_attention_map.get(a.student_id, 0) + 1
                 
     low_attn_list = []
@@ -889,6 +1024,7 @@ def teacher_dashboard_stats(
         attendanceLate=a_late,
         avgGrade=round(avg_grade, 1),
         avgAttention=round(avg_attention, 1),
+        hasAttentionData=bool(attentions),
         missingExams=missing_exams,
         lowAttentionStudents=low_attn_list,
         materialHasLatest=material_has_latest,

@@ -6,6 +6,11 @@ import { useAuthStore } from "../store/authStore.js";
 const MODEL_BASE = "https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model";
 const UNKNOWN_CAPTURE_INTERVAL_MS = 6000;
 const MAX_UNKNOWN_LOG = 12;
+const MATCH_THRESHOLD = 0.58;
+
+function clamp(n, min, max) {
+  return Math.max(min, Math.min(max, n));
+}
 
 function formatTime(ts) {
   try {
@@ -52,10 +57,12 @@ export default function AttentionCameraPage() {
   const [detectedStats, setDetectedStats] = useState({});
   const [unknownCount, setUnknownCount] = useState(0);
   const [unknownLog, setUnknownLog] = useState([]);
-  const [matchThreshold, setMatchThreshold] = useState(0.5);
+  const [liveAttentionScore, setLiveAttentionScore] = useState(0);
+  const [liveFaces, setLiveFaces] = useState(0);
   const [markAbsentOthers, setMarkAbsentOthers] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingUnknown, setUploadingUnknown] = useState(false);
+  const scoreHistoryRef = useRef([]);
 
   const detectedIds = useMemo(() => Object.keys(detectedStats).map(Number), [detectedStats]);
   const rosterRows = useMemo(
@@ -72,6 +79,11 @@ export default function AttentionCameraPage() {
       }),
     [roster, detectedStats],
   );
+  const attentionMeta = useMemo(() => {
+    if (liveAttentionScore >= 75) return { label: "Сайн", cls: "es-risk-low" };
+    if (liveAttentionScore >= 45) return { label: "Дунд", cls: "es-risk-medium" };
+    return { label: "Сул", cls: "es-risk-high" };
+  }, [liveAttentionScore]);
 
   useEffect(() => {
     if (user?.role !== "teacher") return;
@@ -107,6 +119,9 @@ export default function AttentionCameraPage() {
     streamRef.current?.getTracks().forEach((t) => t.stop());
     streamRef.current = null;
     if (videoRef.current) videoRef.current.srcObject = null;
+    setLiveAttentionScore(0);
+    setLiveFaces(0);
+    scoreHistoryRef.current = [];
     setPhase("idle");
   }, []);
 
@@ -143,13 +158,20 @@ export default function AttentionCameraPage() {
         const blob = await resp.blob();
         const objUrl = URL.createObjectURL(blob);
         const img = await faceapi.fetchImage(objUrl);
-        const det = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
+        // Use TinyFaceDetector explicitly (we load only tiny model in this page).
+        const dets = await faceapi
+          .detectAllFaces(img, new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.35 }))
+          .withFaceLandmarks()
+          .withFaceDescriptors();
         URL.revokeObjectURL(objUrl);
-        if (det?.descriptor) {
+        if (dets?.length) {
+          const best = dets.sort(
+            (a, b) => b.detection.box.width * b.detection.box.height - a.detection.box.width * a.detection.box.height,
+          )[0];
           descriptors.push({
             studentId: r.student_id,
             name: r.student_name || `Student #${r.student_id}`,
-            descriptor: det.descriptor,
+            descriptor: best.descriptor,
           });
         }
       } catch {
@@ -169,7 +191,7 @@ export default function AttentionCameraPage() {
         best = { studentId: item.studentId, distance };
       }
     }
-    if (!best || best.distance > matchThreshold) return null;
+    if (!best || best.distance > MATCH_THRESHOLD) return null;
     return best;
   }
 
@@ -190,10 +212,6 @@ export default function AttentionCameraPage() {
   async function startCamera() {
     if (user?.role !== "teacher") {
       setErr("Энэ хэсгийг зөвхөн багш ашиглана.");
-      return;
-    }
-    if (!lessonId) {
-      setErr("Эхлээд хичээл сонгоно уу.");
       return;
     }
     setErr("");
@@ -237,11 +255,12 @@ export default function AttentionCameraPage() {
 
       await loadModels();
       const labeled = await loadLabeledDescriptors();
-      if (!labeled.length) {
-        setErr("Камер ассан. Гэхдээ face profile зураг холбоогүй тул танилт ажиллахгүй байна. Админ student face profile холбоно уу.");
-        return;
-      }
       knownDescriptorsRef.current = labeled;
+      if (!labeled.length) {
+        setErr("Камер ассан. Face profile байхгүй тул танилт/ирцийн холболт хязгаарлагдана.");
+      } else {
+        setOk(`Face profile ачааллаа: ${labeled.length} сурагч`);
+      }
 
       timerRef.current = window.setInterval(async () => {
         if (!v || v.readyState < 2) return;
@@ -251,10 +270,11 @@ export default function AttentionCameraPage() {
           .detectAllFaces(v, new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.45 }))
           .withFaceLandmarks()
           .withFaceDescriptors();
+        const totalFaces = all.length;
         let unknown = 0;
         const matched = [];
         for (const d of all) {
-          const best = bestMatchFor(d.descriptor);
+          const best = knownDescriptorsRef.current.length ? bestMatchFor(d.descriptor) : null;
           if (!best) {
             unknown += 1;
             captureUnknownShot(v);
@@ -263,6 +283,36 @@ export default function AttentionCameraPage() {
           }
         }
         if (unknown > 0) setUnknownCount((x) => x + unknown);
+        // Live attention score should reflect "face is present and centered",
+        // not whether profile matching succeeded.
+        let frameScore = 10;
+        if (totalFaces > 0) {
+          const bestFace = [...all].sort(
+            (a, b) => b.detection.box.width * b.detection.box.height - a.detection.box.width * a.detection.box.height,
+          )[0];
+          const box = bestFace.detection.box;
+          const score = Number(bestFace.detection.score || 0);
+
+          const vw = Math.max(1, v.videoWidth || 1);
+          const vh = Math.max(1, v.videoHeight || 1);
+          const cx = (box.x + box.width / 2) / vw;
+          const cy = (box.y + box.height / 2) / vh;
+          const centerDist = Math.hypot(cx - 0.5, cy - 0.45);
+          const centerScore = clamp(100 - centerDist * 220, 0, 100);
+
+          const faceAreaRatio = (box.width * box.height) / (vw * vh);
+          const sizeScore = clamp((faceAreaRatio / 0.12) * 100, 0, 100);
+          const detectScore = clamp(score * 100, 0, 100);
+
+          frameScore = Math.round(centerScore * 0.45 + sizeScore * 0.35 + detectScore * 0.2);
+          if (totalFaces > 1) frameScore = Math.max(0, frameScore - 15);
+        }
+        scoreHistoryRef.current.push(frameScore);
+        if (scoreHistoryRef.current.length > 10) scoreHistoryRef.current.shift();
+        const smoothed = Math.round(scoreHistoryRef.current.reduce((a, b) => a + b, 0) / scoreHistoryRef.current.length);
+        setLiveAttentionScore(smoothed);
+        setLiveFaces(totalFaces);
+
         if (matched.length) {
           const ts = Date.now();
           setDetectedStats((prev) => {
@@ -297,16 +347,41 @@ export default function AttentionCameraPage() {
     setErr("");
     setOk("");
     try {
-      const res = await apiFetch(`/teacher/lessons/${lessonId}/attendance/auto-face`, {
-        method: "POST",
-        token,
-        body: {
-          detected_student_ids: detectedIds,
-          mark_absent_others: markAbsentOthers,
-          note: "camera-face-recognition",
-        },
+      const maxDetect = Math.max(
+        1,
+        ...rosterRows.map((r) => Number(r.detect_count || 0)),
+      );
+      const attentionRecords = rosterRows.map((r) => {
+        const detectCount = Number(r.detect_count || 0);
+        const ratio = detectCount / maxDetect;
+        const score = detectCount > 0 ? Math.round(55 + ratio * 45) : Math.max(0, Math.round(liveAttentionScore * 0.35));
+        return {
+          student_id: r.student_id,
+          attention_score: score,
+          notes: "camera-live-attention",
+        };
       });
-      setOk(`Ирц хадгаллаа. Танигдсан: ${res.recognized_count}, Present: ${res.present_saved}, Absent: ${res.absent_saved}`);
+
+      const [res] = await Promise.all([
+        apiFetch(`/teacher/lessons/${lessonId}/attendance/auto-face`, {
+          method: "POST",
+          token,
+          body: {
+            detected_student_ids: detectedIds,
+            mark_absent_others: markAbsentOthers,
+            note: "camera-face-recognition",
+          },
+        }),
+        apiFetch(`/teacher/lessons/${lessonId}/attention-report`, {
+          method: "POST",
+          token,
+          body: { records: attentionRecords },
+        }),
+      ]);
+
+      setOk(
+        `Ирц хадгаллаа. Танигдсан: ${res.recognized_count}, Present: ${res.present_saved}, Absent: ${res.absent_saved}`,
+      );
     } catch (e) {
       setErr(e?.message || "Ирц хадгалах үед алдаа гарлаа.");
     } finally {
@@ -360,20 +435,14 @@ export default function AttentionCameraPage() {
   return (
     <div className="es-page">
       <h1 className="es-page-title">Камераар царай таньж ирц бүртгэх</h1>
-      <p className="es-page-desc">Хичээл сонгоод камер асаахад танигдсан сурагчид автоматаар бүртгэгдэнэ.</p>
+      <p className="es-page-desc">Тест горим: камер асаагаад танилтыг шалгана. Хичээл сонгох шаардлагагүй.</p>
 
       <div className="es-section">
         <div className="es-toolbar">
-          <div style={{ minWidth: 280, flex: 1 }}>
-            <label className="es-label">Хичээл сонгох</label>
-            <select className="es-select" value={lessonId} onChange={(e) => setLessonId(e.target.value)}>
-              {!lessons.length && <option value="">— Хичээл алга —</option>}
-              {lessons.map((l) => (
-                <option key={l.id} value={l.id}>
-                  {l.title || `Хичээл #${l.id}`} — {l.class_name}
-                </option>
-              ))}
-            </select>
+          <div style={{ minWidth: 280, flex: 1, color: "var(--es-muted)" }}>
+            {lessonId
+              ? `Сонгогдсон хичээл: ${lessons.find((l) => String(l.id) === String(lessonId))?.title || `#${lessonId}`}`
+              : "Холбох хичээл олдсонгүй (тест камер ажиллана)"}
           </div>
           {phase !== "running" ? (
             <button type="button" className="es-btn es-btn-primary" onClick={startCamera} disabled={phase === "loading"}>
@@ -387,24 +456,34 @@ export default function AttentionCameraPage() {
           <button type="button" className="es-btn es-btn-secondary" onClick={() => setDetectedStats({})}>
             Танигдсан жагсаалт цэвэрлэх
           </button>
-          <div style={{ minWidth: 220 }}>
-            <label className="es-label">Танилтын босго (lower=stricter): {matchThreshold.toFixed(2)}</label>
-            <input
-              type="range"
-              min="0.35"
-              max="0.75"
-              step="0.01"
-              value={matchThreshold}
-              onChange={(e) => setMatchThreshold(Number(e.target.value))}
-              style={{ width: "100%" }}
-            />
-          </div>
         </div>
       </div>
 
       <div className="es-section">
         <div style={{ position: "relative", borderRadius: 12, overflow: "hidden", background: "#000", maxWidth: 900 }}>
           <video ref={videoRef} style={{ width: "100%", aspectRatio: "16/9", objectFit: "cover", transform: "scaleX(-1)" }} />
+          {phase === "running" && (
+            <div
+              style={{
+                position: "absolute",
+                top: 12,
+                right: 12,
+                background: "rgba(15,23,42,0.75)",
+                color: "#fff",
+                borderRadius: 10,
+                padding: "10px 12px",
+                minWidth: 190,
+                border: "1px solid rgba(255,255,255,0.25)",
+              }}
+            >
+              <div style={{ fontSize: "0.8rem", opacity: 0.9, marginBottom: 4 }}>Live анхаарлын оноо</div>
+              <div style={{ fontSize: "1.45rem", fontWeight: 800, lineHeight: 1 }}>{liveAttentionScore}%</div>
+              <div style={{ marginTop: 6 }}>
+                <span className={`es-risk-badge ${attentionMeta.cls}`}>{attentionMeta.label}</span>
+              </div>
+              <div style={{ marginTop: 6, fontSize: "0.78rem", opacity: 0.9 }}>Илэрсэн царай: {liveFaces}</div>
+            </div>
+          )}
           {phase !== "running" && (
             <div style={{ position: "absolute", inset: 0, display: "grid", placeItems: "center", color: "#fff", background: "rgba(0,0,0,0.45)" }}>
               Камер унтарсан
@@ -432,7 +511,28 @@ export default function AttentionCameraPage() {
                 {rosterRows.map((r) => (
                   <tr key={r.student_id}>
                     <td>{r.student_name}</td>
-                    <td>{r.has_face_profile ? "Тийм" : "Үгүй"}</td>
+                    <td>
+                      {r.has_face_profile ? (
+                        r.image_url ? (
+                          <img
+                            src={r.image_url}
+                            alt={r.student_name || "profile"}
+                            style={{
+                              width: 34,
+                              height: 34,
+                              borderRadius: 999,
+                              objectFit: "cover",
+                              border: "1px solid var(--es-border)",
+                              background: "var(--es-surface-soft)",
+                            }}
+                          />
+                        ) : (
+                          "Тийм"
+                        )
+                      ) : (
+                        "Үгүй"
+                      )}
+                    </td>
                     <td>{r.detected ? "Танигдсан" : "Хүлээгдэж байна"}</td>
                     <td>{r.detect_count}</td>
                     <td>{r.best_distance != null ? r.best_distance.toFixed(3) : "-"}</td>
@@ -447,6 +547,27 @@ export default function AttentionCameraPage() {
 
         <div className="es-section">
           <h3 className="es-section-title">Ирц хадгалах</h3>
+          <div style={{ marginBottom: 12 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+              <span className="es-empty">Анхаарлын оноо</span>
+              <strong>{liveAttentionScore}%</strong>
+            </div>
+            <div style={{ height: 8, borderRadius: 999, background: "rgba(148,163,184,.25)", overflow: "hidden" }}>
+              <div
+                style={{
+                  width: `${liveAttentionScore}%`,
+                  height: "100%",
+                  transition: "width .25s ease",
+                  background:
+                    liveAttentionScore >= 75
+                      ? "linear-gradient(90deg,#10b981,#34d399)"
+                      : liveAttentionScore >= 45
+                        ? "linear-gradient(90deg,#f59e0b,#fbbf24)"
+                        : "linear-gradient(90deg,#ef4444,#f87171)",
+                }}
+              />
+            </div>
+          </div>
           <label style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
             <input type="checkbox" checked={markAbsentOthers} onChange={(e) => setMarkAbsentOthers(e.target.checked)} />
             Танигдаагүй бусад сурагчдыг absent болгох

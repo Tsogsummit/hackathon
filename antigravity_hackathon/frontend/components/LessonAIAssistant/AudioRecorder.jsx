@@ -161,7 +161,7 @@ export default function AudioRecorder({ onRecordingComplete, disabled }) {
             height: 88,
             borderRadius: "50%",
             border: "none",
-            background: recording ? "#c62828" : "#1565c0",
+            background: recording ? "var(--es-danger)" : "var(--es-primary)",
             color: "#fff",
             fontSize: 36,
             cursor: disabled ? "not-allowed" : "pointer",
@@ -178,7 +178,7 @@ export default function AudioRecorder({ onRecordingComplete, disabled }) {
             padding: "12px 20px",
             borderRadius: 8,
             border: "none",
-            background: "#2e7d32",
+            background: "var(--es-success)",
             color: "#fff",
             fontWeight: 600,
             cursor: !hasTake || disabled ? "not-allowed" : "pointer",
@@ -188,8 +188,8 @@ export default function AudioRecorder({ onRecordingComplete, disabled }) {
           Зогсоож текст болгох
         </button>
       </div>
-      {error && <p style={{ color: "#c62828" }}>{error}</p>}
-      <p style={{ color: "#666", fontSize: 14 }}>Эхлээд микрофон, дараа нь &quot;Зогсоож текст болгох&quot; дарна уу.</p>
+      {error && <p style={{ color: "var(--es-danger)" }}>{error}</p>}
+      <p style={{ color: "var(--es-muted)", fontSize: 14 }}>Эхлээд микрофон, дараа нь &quot;Зогсоож текст болгох&quot; дарна уу.</p>
     </div>
   );
 }

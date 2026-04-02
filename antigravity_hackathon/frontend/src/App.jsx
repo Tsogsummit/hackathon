@@ -22,6 +22,9 @@ const StudentHomePage = lazy(() => import("./pages/StudentHomePage.jsx"));
 const ParentAcademicPage = lazy(() => import("./pages/ParentAcademicPage.jsx"));
 const NotificationsPage = lazy(() => import("./pages/NotificationsPage.jsx"));
 const AcademicBreakdownPage = lazy(() => import("./pages/AcademicBreakdownPage.jsx"));
+const ProfilePage = lazy(() => import("./pages/ProfilePage.jsx"));
+const SettingsPage = lazy(() => import("./pages/SettingsPage.jsx"));
+const ChatPage = lazy(() => import("./pages/ChatPage.jsx"));
 
 function RouteFallback() {
   return (
@@ -75,8 +78,13 @@ export default function App() {
             <Route element={<AppLayout />}>
               <Route path="/" element={<DashboardPage />} />
               <Route path="/notifications" element={<NotificationsPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/settings" element={<SettingsPage />} />
               <Route path="/academic-breakdown" element={<AcademicBreakdownPage />} />
-              <Route path="/attention" element={<AttentionCameraPage />} />
+              <Route path="/chat" element={<ChatPage />} />
+              <Route element={<RequireRole role={["teacher", "admin", "principal"]} />}>
+                <Route path="/attention" element={<AttentionCameraPage />} />
+              </Route>
 
               <Route element={<RequireRole role="admin" />}>
                 <Route path="/admin/users" element={<UsersManagePage />} />

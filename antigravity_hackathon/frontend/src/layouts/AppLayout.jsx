@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
 
 import { useAuthStore } from "../store/authStore.js";
@@ -16,6 +16,10 @@ const navItem = ({ isActive }) => ({
 
 const PATH_LABELS = {
   "/": "Үндсэн самбар",
+  "/notifications": "Мэдэгдэл",
+  "/chat": "Чат",
+  "/profile": "Профайл",
+  "/settings": "Тохиргоо",
   "/attention": "Анхааралын камер",
   "/admin/users": "Хэрэглэгчид",
   "/admin/school": "Анги ба хичээл",
@@ -39,6 +43,8 @@ export default function AppLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem("es-theme") || "light");
   const [toast, setToast] = useState("");
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
 
   const handleLogout = () => {
     logout();
@@ -58,34 +64,49 @@ export default function AppLayout() {
   }, [location.pathname]);
 
   useEffect(() => {
+    setUserMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
     if (!toast) return undefined;
     const t = setTimeout(() => setToast(""), 2200);
     return () => clearTimeout(t);
   }, [toast]);
 
+  useEffect(() => {
+    if (!userMenuOpen) return undefined;
+    const onDown = (e) => {
+      if (!userMenuRef.current?.contains(e.target)) setUserMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [userMenuOpen]);
+
   return (
     <div className={`es-shell ${sidebarOpen ? "es-shell-sidebar-open" : ""}`}>
       <aside className="es-sidebar">
         <div style={{ marginBottom: "2rem", padding: "0 8px" }}>
-          <div className="es-sidebar-title">EduSmart MN</div>
-          <div className="es-sidebar-subtitle">Next-gen EdTech Platform</div>
+          <div className="es-sidebar-title">Stuto</div>
+          <div className="es-sidebar-subtitle">AI School Management</div>
         </div>
 
         <nav style={{ flex: 1 }}>
           <NavLink to="/" end style={navItem}>
-            🏠 Үндсэн самбар
+            Үндсэн самбар
           </NavLink>
-          <NavLink to="/notifications" style={navItem}>
-            🔔 Мэдэгдэл
+          <NavLink to="/chat" style={navItem}>
+            Чат
           </NavLink>
           {(role === "student" || role === "parent") && (
             <NavLink to="/academic-breakdown" style={navItem}>
               🧾 Хичээлийн дэлгэрэнгүй
             </NavLink>
           )}
-          <NavLink to="/attention" style={navItem}>
-            📷 Анхааралын камер (тест)
-          </NavLink>
+          {["teacher", "admin", "principal"].includes(role) && (
+            <NavLink to="/attention" style={navItem}>
+              Анхааралын камер (тест)
+            </NavLink>
+          )}
 
           {role === "admin" && (
             <>
@@ -93,19 +114,19 @@ export default function AppLayout() {
                 Админ
               </div>
               <NavLink to="/admin/users" style={navItem}>
-                👥 Хэрэглэгчид (нэмэх / засах)
+                Хэрэглэгчид (нэмэх / засах)
               </NavLink>
               <NavLink to="/admin/school" style={navItem}>
-                🏫 Анги &amp; хичээл тохируулах
+                Анги &amp; хичээл тохируулах
               </NavLink>
               <NavLink to="/admin/unknown-faces" style={navItem}>
-                🕵️ Unknown нүүрний лог
+                Unknown нүүрний лог
               </NavLink>
               <NavLink to="/school/unknown-faces" style={navItem}>
-                🎯 Танигдаагүй нүүр
+                Танигдаагүй нүүр
               </NavLink>
               <NavLink to="/school/academic-risk" style={navItem}>
-                📉 Дүнгийн эрсдэлийн самбар
+                Дүнгийн эрсдэлийн самбар
               </NavLink>
             </>
           )}
@@ -116,13 +137,13 @@ export default function AppLayout() {
                 Багш
               </div>
               <NavLink to="/teacher/lesson-ai" style={navItem}>
-                🎙️ Хичээлийн AI туслах
+                Хичээлийн AI туслах
               </NavLink>
               <NavLink to="/teacher/timetable" style={navItem}>
-                🗓️ Хичээлийн хуваарь
+                Хичээлийн хуваарь
               </NavLink>
               <NavLink to="/teacher/grade-predictor" style={navItem}>
-                📈 Дүнгийн таамаг (AI)
+                Дүнгийн таамаг (AI)
               </NavLink>
             </>
           )}
@@ -130,13 +151,13 @@ export default function AppLayout() {
           {role === "student" && (
             <>
               <NavLink to="/student/event-report" style={navItem}>
-                🚨 Үйл явдал мэдэгдэх
+                Үйл явдал мэдэгдэх
               </NavLink>
               <NavLink to="/student/grade-predictions" style={navItem}>
-                📊 Миний дүнгийн таамаг
+                Миний дүнгийн таамаг
               </NavLink>
               <NavLink to="/student/timetable" style={navItem}>
-                🗓️ Хичээлийн хуваарь
+                Хичээлийн хуваарь
               </NavLink>
             </>
           )}
@@ -144,7 +165,7 @@ export default function AppLayout() {
           {role === "parent" && (
             <>
               <NavLink to="/parent" style={navItem}>
-                👨‍👩‍👧 Хүүхдийн дүн
+                Хүүхдийн дүн
               </NavLink>
             </>
           )}
@@ -155,51 +176,19 @@ export default function AppLayout() {
                 Захирал
               </div>
               <NavLink to="/school/event-reports" style={navItem}>
-                🧾 Сурагчийн мэдэгдлүүд
+                Сурагчийн мэдэгдлүүд
               </NavLink>
               <NavLink to="/school/academic-risk" style={navItem}>
-                📉 Дүнгийн эрсдэлийн самбар
+                Дүнгийн эрсдэлийн самбар
               </NavLink>
               <NavLink to="/school/unknown-faces" style={navItem}>
-                🎯 Танигдаагүй нүүр
+                Танигдаагүй нүүр
               </NavLink>
             </>
           )}
 
-          {role === "admin" && (
-            <NavLink to="/school/event-reports" style={navItem}>
-              🧾 Сурагчийн мэдэгдлүүд
-            </NavLink>
-          )}
         </nav>
 
-        <div
-          style={{
-            borderTop: "1px solid rgba(255,255,255,0.15)",
-            paddingTop: 12,
-            fontSize: "0.85rem",
-          }}
-        >
-          <div style={{ padding: "0 8px", marginBottom: 8 }}>
-            <strong>{user?.full_name || user?.email}</strong>
-            <div style={{ opacity: 0.75, fontSize: "0.8rem" }}>{user?.role}</div>
-          </div>
-          <button
-            type="button"
-            className="es-btn es-btn-ghost"
-            style={{ width: "100%", marginBottom: 8, color: "#fff", borderColor: "rgba(255,255,255,0.3)" }}
-            onClick={() => {
-              const next = theme === "dark" ? "light" : "dark";
-              setTheme(next);
-              setToast(next === "dark" ? "Dark mode идэвхжлээ" : "Light mode идэвхжлээ");
-            }}
-          >
-            {theme === "dark" ? "☀️ Light mode" : "🌙 Dark mode"}
-          </button>
-          <button type="button" className="es-btn es-btn-ghost" style={{ width: "100%", color: "#fff", borderColor: "rgba(255,255,255,0.3)" }} onClick={handleLogout}>
-            Гарах
-          </button>
-        </div>
       </aside>
 
       <button
@@ -211,14 +200,57 @@ export default function AppLayout() {
 
       <main className="es-main">
         <div className="es-topbar">
-          <div className="es-toolbar">
+          <div className="es-topbar-left">
             <button type="button" className="es-btn es-btn-secondary es-sidebar-toggle" onClick={() => setSidebarOpen((p) => !p)}>
               ☰
             </button>
-            <div className="es-chip">Role: {user?.role}</div>
-            <div className="es-chip">{user?.full_name || user?.email}</div>
+            <div className="es-chip">Home / {currentLabel}</div>
           </div>
-          <div className="es-chip">Home / {currentLabel}</div>
+          <div className="es-topbar-right">
+            <button type="button" className="es-topbar-icon-btn" onClick={() => navigate("/notifications")} title="Мэдэгдэл">
+              🔔
+            </button>
+            <div ref={userMenuRef} className="es-user-menu-wrap">
+              <button
+                type="button"
+                className="es-topbar-user-btn"
+                onClick={() => setUserMenuOpen((v) => !v)}
+                title="Профайл цэс"
+              >
+                <span className="es-topbar-avatar">{(user?.full_name || user?.email || "U").slice(0, 1).toUpperCase()}</span>
+                <span className="es-topbar-chevron">▾</span>
+              </button>
+              {userMenuOpen && (
+                <div className="es-user-menu-panel">
+                  <div className="es-user-menu-header">
+                    <div className="es-user-menu-name">{user?.full_name || "User"}</div>
+                    <div className="es-user-menu-email">{user?.email || ""}</div>
+                  </div>
+                  <button type="button" className="es-btn es-btn-ghost" style={{ width: "100%", justifyContent: "flex-start", marginBottom: 6 }} onClick={() => navigate("/profile")}>
+                    👤 Profile
+                  </button>
+                  <button type="button" className="es-btn es-btn-ghost" style={{ width: "100%", justifyContent: "flex-start", marginBottom: 6 }} onClick={() => navigate("/settings")}>
+                    ⚙️ Settings
+                  </button>
+                  <button
+                    type="button"
+                    className="es-btn es-btn-ghost"
+                    style={{ width: "100%", justifyContent: "flex-start", marginBottom: 6 }}
+                    onClick={() => {
+                      const next = theme === "dark" ? "light" : "dark";
+                      setTheme(next);
+                      setToast(next === "dark" ? "Dark mode идэвхжлээ" : "Light mode идэвхжлээ");
+                    }}
+                  >
+                    {theme === "dark" ? "☀️ Light mode" : "🌙 Dark mode"}
+                  </button>
+                  <button type="button" className="es-btn es-btn-ghost" style={{ width: "100%", justifyContent: "flex-start", color: "var(--es-danger)" }} onClick={handleLogout}>
+                    🚪 Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
         <Outlet />
       </main>

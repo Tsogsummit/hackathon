@@ -2,41 +2,65 @@ import { useEffect, useState } from "react";
 import { apiFetch } from "../api/client.js";
 import { useAuthStore } from "../store/authStore.js";
 
-const CATEGORIES = [
-  { value: "bully", label: "Дээрэлхэлт, дарамт (Bully)" },
-  { value: "smoke", label: "Тамхи татаж байна" },
-  { value: "vape", label: "Электрон тамхи (Vape)" },
-  { value: "violence", label: "Хүчирхийлэл, зодоон" },
-  { value: "hazard", label: "Аюултай нөхцөл байдал" },
-];
-
-const LOCATIONS = [
-  { value: "floor1_restroom", label: "1-р давхрын ариун цэврийн өрөө" },
-  { value: "floor2_restroom", label: "2-р давхрын ариун цэврийн өрөө" },
-  { value: "floor3_restroom", label: "3-р давхрын ариун цэврийн өрөө" },
-  { value: "floor4_restroom", label: "4-р давхрын ариун цэврийн өрөө" },
-  { value: "floor1_stairs", label: "1-р давхрын шат" },
-  { value: "floor2_stairs", label: "2-р давхрын шат" },
-  { value: "floor3_stairs", label: "3-р давхрын шат" },
-  { value: "floor4_stairs", label: "4-р давхрын шат" },
-  { value: "hallway", label: "Коридор" },
-  { value: "classroom", label: "Анги дотор" },
-  { value: "outside", label: "Сургуулийн гадаах талбай" }
-];
-
-const categoryLabels = CATEGORIES.reduce((acc, c) => ({...acc, [c.value]: c.label}), {});
-const locationLabels = LOCATIONS.reduce((acc, l) => ({...acc, [l.value]: l.label}), {});
-
 export default function StudentEventReportPage() {
   const token = useAuthStore((s) => s.token);
-  const [category, setCategory] = useState("bully");
-  const [location, setLocation] = useState("floor1_restroom");
+  const [categories, setCategories] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const [classOptions, setClassOptions] = useState([]);
+  const [classId, setClassId] = useState("");
+  const [category, setCategory] = useState("");
+  const [location, setLocation] = useState("");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [ok, setOk] = useState("");
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const tt = await apiFetch("/student/timetable", { token });
+        const map = new Map();
+        for (const row of tt || []) {
+          const key = String(row.class_id);
+          if (!map.has(key)) {
+            map.set(key, { id: row.class_id, name: row.class_name || `#${row.class_id}` });
+          }
+        }
+        const classes = Array.from(map.values());
+        setClassOptions(classes);
+        if (classes[0]) setClassId(String(classes[0].id));
+      } catch {
+        setClassOptions([]);
+      }
+    })();
+  }, [token]);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const out = await apiFetch("/student/event-report-options", { token });
+        const cats = Array.isArray(out?.categories) ? out.categories : [];
+        const locs = Array.isArray(out?.locations) ? out.locations : [];
+        setCategories(cats);
+        setLocations(locs);
+        if (cats[0]) setCategory(cats[0].value);
+        if (locs[0]) setLocation(locs[0].value);
+      } catch {
+        setCategories([]);
+        setLocations([]);
+      }
+    })();
+  }, [token]);
+
   async function onSubmit(e) {
     e.preventDefault();
+    if (!classId) {
+      setErr("Анги олдсонгүй. Эхлээд timetable үүссэн эсэхийг шалгана уу.");
+      return;
+    }
+    if (!category || !location) {
+      setErr("Мэдэгдлийн тохиргоо ачаалагдаагүй байна.");
+      return;
+    }
     setLoading(true);
     setErr("");
     setOk("");
@@ -45,13 +69,13 @@ export default function StudentEventReportPage() {
         method: "POST",
         token,
         body: {
-          class_id: 1, // keeping logic format but ignoring input
+          class_id: Number(classId),
           lesson_id: null,
           category,
-          description: `Байршил: ${locationLabels[location]}`,
+          description: `Байршил: ${locations.find((l) => l.value === location)?.label || location}`,
         },
       });
-      setOk(`"${categoryLabels[category]}" мэдэгдэл шуурхай илгээгдлээ. Сургуулийн удирдлага шалгах болно.`);
+      setOk(`"${categories.find((c) => c.value === category)?.label || category}" мэдэгдэл шуурхай илгээгдлээ. Сургуулийн удирдлага шалгах болно.`);
     } catch (e2) {
       setErr(e2?.message || "Илгээж чадсангүй. Та түр хүлээгээд дахин үзнэ үү.");
     } finally {
@@ -66,10 +90,19 @@ export default function StudentEventReportPage() {
 
       <div className="es-section" style={{ maxWidth: 640 }}>
         <form onSubmit={onSubmit} className="es-form-grid" style={{ gap: "20px" }}>
+          <label className="es-label" style={{ fontSize: "1.1rem" }}>Анги:</label>
+          <select className="es-select" value={classId} onChange={(e) => setClassId(e.target.value)} style={{ padding: "12px", fontSize: "1.05rem", borderRadius: "8px" }}>
+            {classOptions.length === 0 && <option value="">— Анги олдсонгүй —</option>}
+            {classOptions.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
           
           <label className="es-label" style={{ fontSize: "1.1rem" }}>Зөрчлийн төрлийг дарж сонгоно уу:</label>
           <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-            {CATEGORIES.map((c) => (
+            {categories.map((c) => (
                <button 
                   type="button" 
                   key={c.value}
@@ -84,12 +117,12 @@ export default function StudentEventReportPage() {
 
           <label className="es-label" style={{ fontSize: "1.1rem", marginTop: "10px" }}>Үйл явдал болж буй байршлыг сонгох:</label>
           <select className="es-select" value={location} onChange={(e) => setLocation(e.target.value)} style={{ padding: "12px", fontSize: "1.05rem", borderRadius: "8px" }}>
-             {LOCATIONS.map(l => (
+             {locations.map(l => (
                 <option key={l.value} value={l.value}>{l.label}</option>
              ))}
           </select>
 
-          <button type="submit" className="es-btn es-btn-danger" style={{ padding: "16px", fontSize: "1.15rem", fontWeight: "bold", marginTop: "10px" }} disabled={loading}>
+          <button type="submit" className="es-btn es-btn-danger" style={{ padding: "16px", fontSize: "1.15rem", fontWeight: "bold", marginTop: "10px" }} disabled={loading || !classId || !category || !location}>
             {loading ? "Илгээж байна..." : "🚨 ЯАРАЛТАЙ ИЛГЭЭХ"}
           </button>
         </form>

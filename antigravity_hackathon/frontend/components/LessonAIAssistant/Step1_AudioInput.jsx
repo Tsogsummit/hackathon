@@ -39,43 +39,40 @@ export default function Step1AudioInput({
   };
 
   return (
-    <div style={{ maxWidth: 560, margin: "0 auto" }}>
-      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+    <div style={{ maxWidth: 600, margin: "0 auto" }}>
+      <p style={{ margin: "0 0 16px", fontSize: "0.88rem", color: "var(--es-muted)", lineHeight: 1.55 }}>
+        <strong style={{ color: "var(--es-text)" }}>1.</strong> Доорх хоёр сонголтын аль нэгээр аудио бэлтгэнэ.{" "}
+        <strong style={{ color: "var(--es-text)" }}>2.</strong> Файл сонгосон бол &quot;Илгээж текст болгох&quot; дарна.
+      </p>
+
+      <div className="es-ai-choice-row">
         <button
           type="button"
           onClick={() => setTab("record")}
-          style={{
-            flex: 1,
-            padding: 12,
-            border: tab === "record" ? "2px solid #1565c0" : "1px solid #ccc",
-            borderRadius: 8,
-            background: tab === "record" ? "#e3f2fd" : "#fff",
-            cursor: "pointer",
-          }}
+          className={`es-ai-choice-btn ${tab === "record" ? "is-active" : ""}`}
         >
-          Бичлэг хийх
+          Микрофоноор бичих
         </button>
         <button
           type="button"
           onClick={() => setTab("upload")}
-          style={{
-            flex: 1,
-            padding: 12,
-            border: tab === "upload" ? "2px solid #1565c0" : "1px solid #ccc",
-            borderRadius: 8,
-            background: tab === "upload" ? "#e3f2fd" : "#fff",
-            cursor: "pointer",
-          }}
+          className={`es-ai-choice-btn ${tab === "upload" ? "is-active" : ""}`}
         >
           Файл оруулах
         </button>
       </div>
 
       {tab === "record" ? (
-        <AudioRecorder
-          disabled={disabled}
-          onRecordingComplete={(blob) => onSubmitBlob(blob)}
-        />
+        <div
+          style={{
+            padding: "1rem",
+            borderRadius: "var(--radius-sm)",
+            border: "1px solid var(--es-border)",
+            background: "var(--es-surface-soft)",
+          }}
+        >
+          <AudioRecorder disabled={disabled} onRecordingComplete={(blob) => onSubmitBlob(blob)} />
+        </div>
       ) : (
         <div
           onDragOver={(e) => {
@@ -84,79 +81,102 @@ export default function Step1AudioInput({
           }}
           onDragLeave={() => setDrag(false)}
           onDrop={onDrop}
-          style={{
-            border: `2px dashed ${drag ? "#1565c0" : "#bbb"}`,
-            borderRadius: 12,
-            padding: 32,
-            textAlign: "center",
-            background: drag ? "#e3f2fd" : "#fafafa",
-          }}
+          className={`es-ai-dropzone ${drag ? "is-drag" : ""}`}
         >
-          <p>Файл чирж тавина уу</p>
-          <p style={{ color: "#666", fontSize: 14 }}>WAV, MP3, M4A, OGG, WEBM — хамгийн ихдээ 50MB</p>
+          <div style={{ fontWeight: 700, color: "var(--es-text)", marginBottom: 8 }}>Аудио файлыг энд чирж тавина уу</div>
+          <p style={{ color: "var(--es-muted)", fontSize: "0.88rem", margin: "0 0 12px", lineHeight: 1.5 }}>
+            WAV, MP3, M4A, OGG, WEBM — хамгийн ихдээ ойролцоогоор 50MB
+          </p>
           <input
             type="file"
             accept=".wav,.mp3,.m4a,.ogg,.webm,audio/*"
             onChange={(e) => setFile(e.target.files?.[0] || null)}
-            style={{ marginTop: 12 }}
+            style={{ fontSize: "0.85rem" }}
           />
-          {file && <p style={{ marginTop: 8 }}>Сонгогдсон: {file.name}</p>}
+          {file && (
+            <p style={{ marginTop: 12, marginBottom: 0, fontWeight: 600, color: "var(--es-primary)" }}>
+              Сонгогдсон: {file.name}
+            </p>
+          )}
         </div>
       )}
 
       <button
         type="button"
         onClick={() => setMetadataOpen(!metadataOpen)}
-        style={{ marginTop: 20, width: "100%", padding: 10, background: "#eceff1", border: "none", borderRadius: 8 }}
+        className="es-btn es-btn-secondary"
+        style={{ width: "100%", marginTop: 20, justifyContent: "center" }}
       >
-        {metadataOpen ? "▼" : "▶"} Нэмэлт мэдээлэл (сонголттой)
+        {metadataOpen ? "▼" : "▶"} Нэмэлт мэдээлэл (сонголттой — илүү нарийвчилсан материал)
       </button>
+
       {metadataOpen && (
-        <div style={{ marginTop: 12, display: "grid", gap: 12 }}>
-          <label>
-            Өдөр
+        <div
+          style={{
+            marginTop: 16,
+            display: "grid",
+            gap: 14,
+            padding: "1rem 1.1rem",
+            borderRadius: "var(--radius-sm)",
+            border: "1px solid var(--es-border)",
+            background: "var(--es-card-bg)",
+          }}
+        >
+          <div>
+            <label className="es-label" htmlFor="ai-meta-date">
+              Өдөр
+            </label>
             <input
+              id="ai-meta-date"
               type="date"
+              className="es-input"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              style={{ width: "100%", marginTop: 4, padding: 8 }}
             />
-          </label>
-          <label>
-            Хичээлийн төрөл
+          </div>
+          <div>
+            <label className="es-label" htmlFor="ai-meta-subject">
+              Хичээлийн төрөл
+            </label>
             <select
+              id="ai-meta-subject"
+              className="es-select"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              style={{ width: "100%", marginTop: 4, padding: 8 }}
             >
-              <option value="">—</option>
+              <option value="">— Сонгохгүй —</option>
               {SUBJECTS.map((s) => (
                 <option key={s.v} value={s.v}>
                   {s.l}
                 </option>
               ))}
             </select>
-          </label>
-          <label>
-            Анги (1–12)
-            <select value={grade} onChange={(e) => setGrade(e.target.value)} style={{ width: "100%", marginTop: 4, padding: 8 }}>
-              <option value="">—</option>
+          </div>
+          <div>
+            <label className="es-label" htmlFor="ai-meta-grade">
+              Анги (1–12)
+            </label>
+            <select id="ai-meta-grade" className="es-select" value={grade} onChange={(e) => setGrade(e.target.value)}>
+              <option value="">— Сонгохгүй —</option>
               {Array.from({ length: 12 }, (_, i) => i + 1).map((g) => (
                 <option key={g} value={String(g)}>
                   {g}
                 </option>
               ))}
             </select>
-          </label>
-          <label>
-            Сэдэв
+          </div>
+          <div>
+            <label className="es-label" htmlFor="ai-meta-topic">
+              Сэдэв
+            </label>
             <input
+              id="ai-meta-topic"
+              className="es-input"
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
-              style={{ width: "100%", marginTop: 4, padding: 8 }}
               placeholder="Жишээ: Квадрат тэгшитгэл"
             />
-          </label>
+          </div>
         </div>
       )}
 
@@ -164,18 +184,9 @@ export default function Step1AudioInput({
         <button
           type="button"
           disabled={disabled || !file}
+          className="es-btn es-btn-primary"
+          style={{ width: "100%", marginTop: 24, padding: "14px 18px" }}
           onClick={() => file && onSubmitFile(file)}
-          style={{
-            marginTop: 24,
-            width: "100%",
-            padding: 14,
-            background: "#1565c0",
-            color: "#fff",
-            border: "none",
-            borderRadius: 8,
-            fontWeight: 700,
-            cursor: disabled || !file ? "not-allowed" : "pointer",
-          }}
         >
           Илгээж текст болгох
         </button>

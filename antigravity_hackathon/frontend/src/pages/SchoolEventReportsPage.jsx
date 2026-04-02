@@ -70,7 +70,7 @@ export default function SchoolEventReportsPage() {
                   <tr key={r.id}>
                     <td>#{r.id}</td>
                     <td><span className="es-pill">{r.category}</span></td>
-                    <td>#{r.reporter_student_id}</td>
+                    <td>{r.reporter_student_name || `#${r.reporter_student_id}`}</td>
                     <td>
                       class={r.class_id} {r.lesson_id ? `, lesson=${r.lesson_id}` : ""}
                     </td>

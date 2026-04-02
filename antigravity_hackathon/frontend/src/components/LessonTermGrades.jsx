@@ -83,10 +83,10 @@ export default function LessonTermGrades({ classId, token }) {
     }
   };
 
-  if (loading) return <div style={{ color: "var(--es-muted)", marginTop: 20 }}>Ачаалж байна...</div>;
+  if (loading) return <div style={{ color: "var(--es-muted)" }}>Ачаалж байна...</div>;
 
   return (
-    <div style={{ marginTop: 20 }}>
+    <div>
       {err && <p className="es-alert es-alert-danger">{err}</p>}
       {ok && <p className="es-alert es-alert-success">{ok}</p>}
 
@@ -153,7 +153,7 @@ export default function LessonTermGrades({ classId, token }) {
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan="5" style={{ textAlign: "center", color: "#666" }}>Одоогоор сурагч бүртгэгдээгүй байна.</td>
+                <td colSpan="5" style={{ textAlign: "center", color: "var(--es-muted)" }}>Одоогоор сурагч бүртгэгдээгүй байна.</td>
               </tr>
             )}
           </tbody>
