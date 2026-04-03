@@ -1,0 +1,88 @@
+/* Тайлангийн хуудсууд — cs_grade6, web_grade10 */
+.report-page .report-shell {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 3rem;
+}
+
+.report-page h1 {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.2rem, 2.5vw, 1.65rem);
+}
+
+.report-page .report-sub {
+  margin: 0 0 1.25rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.report-page .report-err {
+  padding: 1rem;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius);
+  color: #991b1b;
+}
+
+.report-page .class-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.report-page .class-tab {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.report-page .class-tab[aria-selected="true"] {
+  background: #e0e7ff;
+  border-color: #a5b4fc;
+  color: #3730a3;
+}
+
+.report-page .student-grid {
+  display: grid;
+  gap: 0.75rem;
+}
+
+@media (min-width: 520px) {
+  .report-page .student-grid {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  }
+}
+
+.report-page .student-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1rem;
+  box-shadow: var(--shadow);
+}
+
+.report-page .student-card h3 {
+  margin: 0 0 0.25rem;
+  font-size: 1rem;
+}
+
+.report-page .student-meta {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0 0 0.5rem;
+}
+
+.report-page .grades-row {
+  font-size: 0.85rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.report-page .grades-row span {
+  color: var(--muted);
+}

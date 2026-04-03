@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>10–11-р анги — Тайлан</title>
+  <link rel="stylesheet" href="site-theme.css" />
+  <link rel="stylesheet" href="site-topnav.css" />
+  <link rel="stylesheet" href="report-pages.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+</head>
+<body class="report-page">
+  <div class="site-topnav-wrap">
+    <nav class="site-topnav" aria-label="Ангиар">
+      <a href="index.html">нүүр</a>
+      <a href="cs_grade6.html">6р анги</a>
+      <a href="../python_exercises/index.html">Python 7–9</a>
+      <a href="web_grade10.html">10р анги</a>
+      <a href="../python_exercises/advanced.html">11р анги</a>
+      <a href="../python_exercises/advanced.html">12р анги</a>
+      <a href="../python_exercises/advanced_answers.html">11–12 хариулт</a>
+    </nav>
+  </div>
+  <div class="report-shell">
+    <h1>11Б анги — МТ тайлан</h1>
+    <p class="report-sub">Цэсэнд «10р анги» гэж харагдана; одоогоор <code>data/grade_11b.json</code> ашиглана.</p>
+    <div id="report-root"></div>
+  </div>
+  <script type="module">
+    const root = document.getElementById("report-root");
+
+    function esc(s) {
+      const d = document.createElement("div");
+      d.textContent = s ?? "";
+      return d.innerHTML;
+    }
+
+    function render(data) {
+      const students = data.students || [];
+      const grid = document.createElement("div");
+      grid.className = "student-grid";
+      for (const s of students) {
+        const name = `${s.family_name || ""} ${s.given_name || ""}`.trim();
+        const cw = s.grade_coursework_mt;
+        const ex = s.grade_exam_mt;
+        const t2 = s.grade_term2_mt;
+        const card = document.createElement("article");
+        card.className = "student-card";
+        card.innerHTML = `
+          <h3>${esc(name)}</h3>
+          <p class="student-meta">${esc(s.student_code || "")} · жагсаалт #${esc(String(s.list_no ?? ""))}</p>
+          <div class="grades-row">
+            ${cw ? `<div><span>Явц:</span> ${esc(String(cw.score))} / ${esc(String(cw.max_points))} (${esc(String(cw.score_percent))}%)</div>` : ""}
+            ${ex ? `<div><span>Шалгалт:</span> ${esc(String(ex.score))} / ${esc(String(ex.max_points))} (${esc(String(ex.score_percent))}%)</div>` : ""}
+            ${t2 ? `<div><span>2-р улирал:</span> ${esc(String(t2.total_score))} · ${esc(String(t2.letter_grade || ""))}</div>` : ""}
+          </div>`;
+        grid.appendChild(card);
+      }
+      root.innerHTML = "";
+      root.appendChild(grid);
+    }
+
+    (async () => {
+      root.innerHTML = "<p class=\"report-sub\">Ачаалж байна…</p>";
+      try {
+        const r = await fetch("../data/grade_11b.json");
+        if (!r.ok) throw new Error(r.statusText);
+        render(await r.json());
+      } catch (e) {
+        root.innerHTML = `<div class="report-err">Ачаалахад алдаа: ${esc(String(e))}.</div>`;
+      }
+    })();
+  </script>
+</body>
+</html>

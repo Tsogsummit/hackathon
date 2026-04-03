@@ -1,0 +1,1051 @@
+{
+  "class": "6B",
+  "source": "lxp.eschool.mn (roster HTML export)",
+  "exported_at": "2026-04-03",
+  "students": [
+    {
+      "lxp_row_id": 410727,
+      "list_no": 1,
+      "student_code": "TS20250612",
+      "family_name": "Lee",
+      "given_name": "yeeun",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bf9158c605b.png",
+      "photo_local": "photos/01_TS20250612.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 14,
+      "attendance_percent": 70.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "Т",
+        "Т"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 75.0,
+        "score_percent": 100.0
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 10.0,
+        "score_percent": 40.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 85.0,
+        "letter_grade": "VII"
+      }
+    },
+    {
+      "lxp_row_id": 410550,
+      "list_no": 2,
+      "student_code": "TS20250601",
+      "family_name": "Чулуун",
+      "given_name": "Амин-Эрдэнэ",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bf8b87a776f.png",
+      "photo_local": "photos/02_TS20250601.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 16,
+      "attendance_percent": 80.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 73.0,
+        "score_percent": 97.33
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 20.0,
+        "score_percent": 80.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 93.0,
+        "letter_grade": "VIII"
+      }
+    },
+    {
+      "lxp_row_id": 410725,
+      "list_no": 3,
+      "student_code": "TS20251012",
+      "family_name": "Ган-Эрдэнэ",
+      "given_name": "Амин-Эрдэнэ",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bf9194d2079.png",
+      "photo_local": "photos/03_TS20251012.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 16,
+      "attendance_percent": 80.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 75.0,
+        "score_percent": 100.0
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 17.0,
+        "score_percent": 68.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 92.0,
+        "letter_grade": "VIII"
+      }
+    },
+    {
+      "lxp_row_id": 299530,
+      "list_no": 4,
+      "student_code": "TS2024292",
+      "family_name": "Лхагвасүрэн",
+      "given_name": "Булганзаяа",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/6732eae60efcc.png",
+      "photo_local": "photos/04_TS2024292.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 16,
+      "attendance_percent": 80.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 73.0,
+        "score_percent": 97.33
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 19.0,
+        "score_percent": 76.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 92.0,
+        "letter_grade": "VIII"
+      }
+    },
+    {
+      "lxp_row_id": 299531,
+      "list_no": 5,
+      "student_code": "TS2024293",
+      "family_name": "Наранбаатар",
+      "given_name": "Гоомарал",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/6736dab8ecba3.png",
+      "photo_local": "photos/05_TS2024293.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 16,
+      "attendance_percent": 80.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 75.0,
+        "score_percent": 100.0
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 15.0,
+        "score_percent": 60.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 90.0,
+        "letter_grade": "VIII"
+      }
+    },
+    {
+      "lxp_row_id": 410577,
+      "list_no": 6,
+      "student_code": "TS20250603",
+      "family_name": "Мандал",
+      "given_name": "Дэлгэрмөрөн",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bf8c1bedba6.png",
+      "photo_local": "photos/06_TS20250603.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 16,
+      "attendance_percent": 80.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 70.0,
+        "score_percent": 93.33
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 20.0,
+        "score_percent": 80.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 90.0,
+        "letter_grade": "VIII"
+      }
+    },
+    {
+      "lxp_row_id": 299514,
+      "list_no": 7,
+      "student_code": "TS2024276",
+      "family_name": "Цэрэнчулуун",
+      "given_name": "Мөнгөншагай",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/6736e1caee9bc.png",
+      "photo_local": "photos/07_TS2024276.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 16,
+      "attendance_percent": 80.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 73.0,
+        "score_percent": 97.33
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 7.0,
+        "score_percent": 28.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 80.0,
+        "letter_grade": "VII"
+      }
+    },
+    {
+      "lxp_row_id": 461210,
+      "list_no": 8,
+      "student_code": "TS20250644",
+      "family_name": "Мөнхсутай",
+      "given_name": "Номиндалай",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/692fb1da546a2.png",
+      "photo_local": "photos/08_TS20250644.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 14,
+      "attendance_percent": 70.0,
+      "attendance_session_marks": [
+        "Ө",
+        "Ө",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 75.0,
+        "score_percent": 100.0
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 15.0,
+        "score_percent": 60.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 90.0,
+        "letter_grade": "VIII"
+      }
+    },
+    {
+      "lxp_row_id": 410590,
+      "list_no": 9,
+      "student_code": "TS20250605",
+      "family_name": "Ганбаяр",
+      "given_name": "Номинжин",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bf89ef21986.png",
+      "photo_local": "photos/09_TS20250605.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 16,
+      "attendance_percent": 80.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 75.0,
+        "score_percent": 100.0
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 23.0,
+        "score_percent": 92.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 98.0,
+        "letter_grade": "VIII"
+      }
+    },
+    {
+      "lxp_row_id": 410591,
+      "list_no": 10,
+      "student_code": "TS20250606",
+      "family_name": "Энхтөр",
+      "given_name": "Оргил",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bf8b333c80d.png",
+      "photo_local": "photos/10_TS20250606.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 16,
+      "attendance_percent": 80.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 70.0,
+        "score_percent": 93.33
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 10.0,
+        "score_percent": 40.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 80.0,
+        "letter_grade": "VII"
+      }
+    },
+    {
+      "lxp_row_id": 410722,
+      "list_no": 11,
+      "student_code": "TS20250610",
+      "family_name": "Төмөртогоо",
+      "given_name": "Очирсүлд",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bf8afe7bf79.png",
+      "photo_local": "photos/11_TS20250610.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 16,
+      "attendance_percent": 80.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 70.0,
+        "score_percent": 93.33
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 20.0,
+        "score_percent": 80.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 90.0,
+        "letter_grade": "VIII"
+      }
+    },
+    {
+      "lxp_row_id": 454428,
+      "list_no": 12,
+      "student_code": "TS202510120",
+      "family_name": "Энхбаяр",
+      "given_name": "Өнөрбаяр",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/69158f2b32927.png",
+      "photo_local": "photos/12_TS202510120.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 12,
+      "attendance_percent": 60.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "Ч",
+        "Ч",
+        "Ч",
+        "Ч",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 69.0,
+        "score_percent": 92.0
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 11.0,
+        "score_percent": 44.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 80.0,
+        "letter_grade": "VII"
+      }
+    },
+    {
+      "lxp_row_id": 299522,
+      "list_no": 13,
+      "student_code": "TS2024284",
+      "family_name": "Бямбажав",
+      "given_name": "Саран",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/673ae8455921f.png",
+      "photo_local": "photos/13_TS2024284.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 15,
+      "attendance_percent": 75.0,
+      "attendance_session_marks": [
+        "И",
+        "Х",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 75.0,
+        "score_percent": 100.0
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 25.0,
+        "score_percent": 100.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 100.0,
+        "letter_grade": "VIII"
+      }
+    },
+    {
+      "lxp_row_id": 299523,
+      "list_no": 14,
+      "student_code": "TS2024285",
+      "family_name": "Саруулсайхан",
+      "given_name": "Тунгалаг",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/673ae598046bd.png",
+      "photo_local": "photos/14_TS2024285.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 9,
+      "attendance_percent": 45.0,
+      "attendance_session_marks": [
+        "И",
+        "Х",
+        "Т",
+        "Т",
+        "И",
+        "И",
+        "Т",
+        "Т",
+        "И",
+        "И",
+        "Ө",
+        "Ө",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 66.0,
+        "score_percent": 88.0
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 14.0,
+        "score_percent": 56.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 80.0,
+        "letter_grade": "VII"
+      }
+    },
+    {
+      "lxp_row_id": 410593,
+      "list_no": 15,
+      "student_code": "TS20250607",
+      "family_name": "Хүдэрчулуун",
+      "given_name": "Тэмүгэн",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bf8ad3ae453.png",
+      "photo_local": "photos/15_TS20250607.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 16,
+      "attendance_percent": 80.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 72.0,
+        "score_percent": 96.0
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 8.0,
+        "score_percent": 32.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 80.0,
+        "letter_grade": "VII"
+      }
+    },
+    {
+      "lxp_row_id": 410600,
+      "list_no": 16,
+      "student_code": "TS20250608",
+      "family_name": "Батбилэг",
+      "given_name": "Ундрал",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bf8aa2deef5.png",
+      "photo_local": "photos/16_TS20250608.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 12,
+      "attendance_percent": 60.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "Ч",
+        "Ч",
+        "И",
+        "И",
+        "Ө",
+        "Ө",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 74.0,
+        "score_percent": 98.67
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 16.0,
+        "score_percent": 64.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 90.0,
+        "letter_grade": "VIII"
+      }
+    },
+    {
+      "lxp_row_id": 299524,
+      "list_no": 17,
+      "student_code": "TS2024286",
+      "family_name": "Одбаатар",
+      "given_name": "Үйлстөгөлдөр",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/673ae12185e25.png",
+      "photo_local": "photos/17_TS2024286.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 15,
+      "attendance_percent": 75.0,
+      "attendance_session_marks": [
+        "И",
+        "Х",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 69.0,
+        "score_percent": 92.0
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 11.0,
+        "score_percent": 44.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 80.0,
+        "letter_grade": "VII"
+      }
+    },
+    {
+      "lxp_row_id": 410718,
+      "list_no": 18,
+      "student_code": "TS20250609",
+      "family_name": "Тулга",
+      "given_name": "Хулан",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bf8a7b15de9.png",
+      "photo_local": "photos/18_TS20250609.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 16,
+      "attendance_percent": 80.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 75.0,
+        "score_percent": 100.0
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 15.0,
+        "score_percent": 60.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 90.0,
+        "letter_grade": "VIII"
+      }
+    },
+    {
+      "lxp_row_id": 410613,
+      "list_no": 19,
+      "student_code": "20250608",
+      "family_name": "Мөнххангай",
+      "given_name": "Цогт-Эрдэнэ",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bf8a2e5a1e7.png",
+      "photo_local": "photos/19_20250608.png",
+      "attendance_total_sessions": 16,
+      "attendance_present_count": 16,
+      "attendance_percent": 80.0,
+      "attendance_session_marks": [
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И",
+        "И"
+      ],
+      "grade_coursework_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "явцийн үнэлгээ",
+        "max_points": 75,
+        "score": 69.0,
+        "score_percent": 92.0
+      },
+      "grade_exam_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "kind_mn": "шалгалтын оноо",
+        "max_points": 25,
+        "score": 21.0,
+        "score_percent": 84.0
+      },
+      "grade_term2_mt": {
+        "subject_mn": "Мэдээллийн технологи",
+        "term_mn": "2-р улирал",
+        "total_score": 90.0,
+        "letter_grade": "VIII"
+      }
+    }
+  ],
+  "attendance_mt": {
+    "subject_mn": "Мэдээллийн технологи",
+    "term_mn": "2-р улирал",
+    "date_from": "2026-01-26",
+    "date_to": "2026-04-03",
+    "total_sessions": 16
+  },
+  "coursework_grade_meta": {
+    "subject_mn": "Мэдээллийн технологи",
+    "kind_mn": "явцийн үнэлгээ",
+    "max_points": 75.0,
+    "import_note_mn": "явц + шалгалт = улирлын нийт; оноо нь max-аас хэтрэхгүй.",
+    "imported_at": "2026-04-03"
+  },
+  "exam_grade_meta": {
+    "subject_mn": "Мэдээллийн технологи",
+    "kind_mn": "шалгалтын оноо",
+    "max_points": 25.0,
+    "import_note_mn": "явц + шалгалт = улирлын нийт; оноо нь max-аас хэтрэхгүй.",
+    "imported_at": "2026-04-03"
+  },
+  "mt_term2_quarter_summary": {
+    "subject_mn": "Мэдээллийн технологи",
+    "term_mn": "2-р улирал",
+    "metrics": {
+      "Гүйцэтгэл": {
+        "class": 87.89,
+        "girls": 90.91,
+        "boys": 83.75
+      },
+      "Чанар": {
+        "class": 100.0,
+        "girls": 100.0,
+        "boys": 100.0
+      },
+      "Амжилт": {
+        "class": 100.0,
+        "girls": 100.0,
+        "boys": 100.0
+      },
+      "Дээд оноо": {
+        "class": 100.0,
+        "girls": 100.0,
+        "boys": 90.0
+      },
+      "Доод оноо": {
+        "class": 80.0,
+        "girls": 80.0,
+        "boys": 80.0
+      }
+    },
+    "letter_distribution": {
+      "I": {
+        "class": 0,
+        "girls": 0,
+        "boys": 0
+      },
+      "II": {
+        "class": 0,
+        "girls": 0,
+        "boys": 0
+      },
+      "III": {
+        "class": 0,
+        "girls": 0,
+        "boys": 0
+      },
+      "IV": {
+        "class": 0,
+        "girls": 0,
+        "boys": 0
+      },
+      "V": {
+        "class": 0,
+        "girls": 0,
+        "boys": 0
+      },
+      "VI": {
+        "class": 0,
+        "girls": 0,
+        "boys": 0
+      },
+      "VII": {
+        "class": 7,
+        "girls": 2,
+        "boys": 5
+      },
+      "VIII": {
+        "class": 12,
+        "girls": 9,
+        "boys": 3
+      }
+    }
+  }
+}

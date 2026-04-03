@@ -1,0 +1,270 @@
+/* Python 7–9 — дасгалын карт */
+.py-page {
+  min-height: 100vh;
+}
+
+.py-main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 3rem;
+}
+
+.py-hero {
+  margin-bottom: 1.5rem;
+}
+
+.py-hero h1 {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.25rem, 2.8vw, 1.75rem);
+}
+
+.py-hero .subtitle {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.py-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 0.75rem;
+  font-size: 0.88rem;
+}
+
+.lesson-block {
+  margin-bottom: 2.25rem;
+}
+
+.lesson-head {
+  margin-bottom: 1rem;
+}
+
+.lesson-head h2 {
+  margin: 0.35rem 0 0;
+  font-size: 1.15rem;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  margin-right: 0.35rem;
+}
+
+.tag-grade {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.lesson-head .tag:not(.tag-grade) {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.card-h {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  gap: 0.5rem 0.75rem;
+  align-items: start;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(135deg, #f8fafc 0%, #fff 100%);
+  border-bottom: 1px solid var(--border);
+}
+
+.card-h .num {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.card-h .title {
+  grid-column: 1 / -1;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+@media (min-width: 520px) {
+  .card-h .title {
+    grid-column: 3;
+  }
+}
+
+.badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+}
+
+.b-e {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.b-m {
+  background: #fef9c3;
+  color: #854d0e;
+}
+
+.b-h {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.card-b {
+  padding: 1rem;
+}
+
+.task {
+  font-size: 0.92rem;
+  margin-bottom: 1rem;
+  color: #334155;
+}
+
+.editor-wrap {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.editor-head {
+  background: #1e293b;
+  color: #e2e8f0;
+  font-size: 0.75rem;
+  padding: 0.4rem 0.65rem;
+  font-family: ui-monospace, monospace;
+}
+
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+  vertical-align: middle;
+}
+
+.dr {
+  background: #f87171;
+}
+
+.dy {
+  background: #fbbf24;
+}
+
+.dg {
+  background: #4ade80;
+}
+
+textarea.code {
+  display: block;
+  width: 100%;
+  min-height: 160px;
+  margin: 0;
+  padding: 0.65rem 0.75rem;
+  border: none;
+  font-family: ui-monospace, "Cascadia Code", monospace;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  resize: vertical;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+.stdin-wrap {
+  margin-bottom: 0.75rem;
+}
+
+.stdin-wrap label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin-bottom: 0.35rem;
+}
+
+textarea.stdin {
+  width: 100%;
+  min-height: 56px;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: ui-monospace, monospace;
+  font-size: 0.82rem;
+  resize: vertical;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.btn {
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-run {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn-run:hover:not(:disabled) {
+  background: #4338ca;
+}
+
+.btn-run:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.btn-reset {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid var(--border);
+}
+
+.out-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+.out {
+  min-height: 3rem;
+  padding: 0.65rem 0.75rem;
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: ui-monospace, monospace;
+  font-size: 0.82rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.out.err {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
+}

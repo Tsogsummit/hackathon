@@ -1,0 +1,199 @@
+{
+  "class": "7B",
+  "source": "lxp.eschool.mn (roster HTML export) — transcript recovery",
+  "exported_at": "2026-04-03",
+  "students": [
+    {
+      "lxp_row_id": 299595,
+      "list_no": 1,
+      "student_code": "TS2024357",
+      "family_name": "Мөнхтуяа",
+      "given_name": "Бархүү",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/672b3172b2be6.png"
+    },
+    {
+      "lxp_row_id": 299598,
+      "list_no": 2,
+      "student_code": "TS2024360",
+      "family_name": "Баярхүү",
+      "given_name": "Баяр",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/672b3251d0ef2.png"
+    },
+    {
+      "lxp_row_id": 299582,
+      "list_no": 3,
+      "student_code": "TS2024344",
+      "family_name": "Гантулга",
+      "given_name": "Билгүүндалай",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bfb139b865a.png"
+    },
+    {
+      "lxp_row_id": 299600,
+      "list_no": 4,
+      "student_code": "TS2024362",
+      "family_name": "Сайнбаяр",
+      "given_name": "Гэгээн",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/672c67937f3b7.png"
+    },
+    {
+      "lxp_row_id": 299603,
+      "list_no": 5,
+      "student_code": "TS2024365",
+      "family_name": "Отгоншар",
+      "given_name": "Ирмүүнзаяа",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/672c68bbc135f.png"
+    },
+    {
+      "lxp_row_id": 405747,
+      "list_no": 6,
+      "student_code": "TS20250703",
+      "family_name": "Наранчулуу",
+      "given_name": "Мандарваа",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bfb380635f8.png"
+    },
+    {
+      "lxp_row_id": 299591,
+      "list_no": 7,
+      "student_code": "TS2024353",
+      "family_name": "Баасанчулуун",
+      "given_name": "Мөнхбуян",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/672c69664bb02.png"
+    },
+    {
+      "lxp_row_id": 299576,
+      "list_no": 8,
+      "student_code": "TS2024338",
+      "family_name": "Эрдэнэчулуун",
+      "given_name": "Нэмүүн",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/672c69cea635d.png"
+    },
+    {
+      "lxp_row_id": 299586,
+      "list_no": 9,
+      "student_code": "TS2024348",
+      "family_name": "Бадарч",
+      "given_name": "Одбаяр",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bfb3bd38c6d.png"
+    },
+    {
+      "lxp_row_id": 299581,
+      "list_no": 10,
+      "student_code": "TS2024343",
+      "family_name": "Ганбаяр",
+      "given_name": "Отгонзул",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bfb3d94dedb.png"
+    },
+    {
+      "lxp_row_id": 299580,
+      "list_no": 11,
+      "student_code": "TS2024342",
+      "family_name": "Золжаргал",
+      "given_name": "Содбилэг",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bfb3f8d23d5.png"
+    },
+    {
+      "lxp_row_id": 299578,
+      "list_no": 12,
+      "student_code": "TS2024340",
+      "family_name": "Түвшинтөгс",
+      "given_name": "Сондор",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/672c6bab03a5e.png"
+    },
+    {
+      "lxp_row_id": 299596,
+      "list_no": 13,
+      "student_code": "TS2024358",
+      "family_name": "Пүрэв",
+      "given_name": "Сондор",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bfb42964a82.png"
+    },
+    {
+      "lxp_row_id": 299577,
+      "list_no": 14,
+      "student_code": "TS2024339",
+      "family_name": "Энхсайхан",
+      "given_name": "Тэмүүлэн",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/672c6c8bbb355.png"
+    },
+    {
+      "lxp_row_id": 299604,
+      "list_no": 15,
+      "student_code": "TS2024366",
+      "family_name": "Занабазар",
+      "given_name": "Тэмүүлэн",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/6746c58338e9a.png"
+    },
+    {
+      "lxp_row_id": 463552,
+      "list_no": 16,
+      "student_code": "TS20260110",
+      "family_name": "Энхцэцэг",
+      "given_name": "Тэнүүнтамир",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/6978590690969.png"
+    },
+    {
+      "lxp_row_id": 299602,
+      "list_no": 17,
+      "student_code": "TS2024364",
+      "family_name": "Мөнхтулга",
+      "given_name": "Тэргэл",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/672c6cd99181f.png"
+    },
+    {
+      "lxp_row_id": 299592,
+      "list_no": 18,
+      "student_code": "TS2024354",
+      "family_name": "Жүгдэр",
+      "given_name": "Ундарга",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68bfb4709b01a.png"
+    },
+    {
+      "lxp_row_id": 447960,
+      "list_no": 19,
+      "student_code": "TS20250731",
+      "family_name": "Бямбатогтох",
+      "given_name": "Ухаантөгс",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68e491cdc57d1.png"
+    },
+    {
+      "lxp_row_id": 299584,
+      "list_no": 20,
+      "student_code": "TS2024346",
+      "family_name": "Ганбаяр",
+      "given_name": "Уянга",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/672c6d6c3e0a2.png"
+    },
+    {
+      "lxp_row_id": 299590,
+      "list_no": 21,
+      "student_code": "TS2024352",
+      "family_name": "Номин-Эрдэнэ",
+      "given_name": "Хүслэн",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/672c6db524c63.png"
+    },
+    {
+      "lxp_row_id": 299599,
+      "list_no": 22,
+      "student_code": "TS2024361",
+      "family_name": "Ган-Эрдэнэ",
+      "given_name": "Хүслэн",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/672c6df92328e.png"
+    },
+    {
+      "lxp_row_id": 299601,
+      "list_no": 23,
+      "student_code": "TS2024363",
+      "family_name": "Батжаргал",
+      "given_name": "Цэлмүүн",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/68e3305f3ca88.png"
+    },
+    {
+      "lxp_row_id": 299589,
+      "list_no": 24,
+      "student_code": "TS2024351",
+      "family_name": "Үүрцайх",
+      "given_name": "Эрхэмбилэг",
+      "photo_url": "https://lxp-cdn.eschool.mn/u/672c6f5061523.png"
+    }
+  ]
+}

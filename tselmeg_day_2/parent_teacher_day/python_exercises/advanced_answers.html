@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Advanced Python — Дасгалуудын хариулт (11–12)</title>
+  <link rel="stylesheet" href="../web/site-theme.css" />
+  <link rel="stylesheet" href="../web/site-topnav.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="advanced_answers.css" />
+</head>
+<body class="aa-page">
+<div class="bg-pattern" aria-hidden="true" style="position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.55;background:radial-gradient(ellipse 80% 50% at 50% -20%, rgba(99,102,241,0.1), transparent), radial-gradient(ellipse 60% 40% at 100% 50%, rgba(13,148,136,0.08), transparent), radial-gradient(ellipse 50% 30% at 0% 80%, rgba(251,191,36,0.06), transparent);"></div>
+<div style="position:relative;z-index:1">    <div class="site-topnav-wrap">
+      <nav class="site-topnav" aria-label="Ангиар">
+        <a href="../web/index.html">нүүр</a>
+        <a href="../web/cs_grade6.html">6р анги</a>
+        <a href="index.html">Python 7–9</a>
+        <a href="../web/web_grade10.html">10р анги</a>
+        <a href="advanced.html">11р анги</a>
+        <a href="advanced.html">12р анги</a>
+      </nav>
+    </div>
+<div class="aa-shell">
+<h1>🐍 Advanced Python — Дасгалуудын хариулт</h1>
+<p class="aa-subtitle">Tselmeg Digital International School — Б.Цог — 2026 · 11–12-р анги</p>
+<p class="aa-note">Энд <code>advanced_snippets/</code> дахь <strong>.py файлуудын бүрэн эх</strong> харагдана. Хөтөч дээр ажиллуулах демо: <a href="advanced.html">advanced.html</a>. Таны илгээсэн урт HTML-д байсан өргөтгөлүүд (ялах шугам, minimax, тусгай хоол гэх мэт) — тусдаа хичээлийн нэмэлт хэсэг; энд зөвхөн репозиторийн эх код.</p>
+<div class="lesson-group">
+  <div class="lesson-title"><span>Хичээл 6</span> Function — parity</div>
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">parity.py</span>
+      <span class="badge-easy">EASY</span>
+      <div class="ex-title">is_even() — тэгш эсэх</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-task">`is_even(n)` — үлдэгдэл 0 эсэхээр тэгш эсэхийг шалгана.</div>
+      <div class="code-block">
+        <div class="code-header"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span> &nbsp;parity.py</div>
+        <pre class="aa-pre">def is_even(n):
+    return n % 2 == 0
+
+
+def main():
+    x = int(input(&quot;Тоо оруул: &quot;))
+    if is_even(x):
+        print(&quot;Энэ бол тэгш тоо.&quot;)
+    else:
+        print(&quot;Энэ бол сондгой тоо.&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</pre>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="lesson-group">
+  <div class="lesson-title"><span>Хичээл 7</span> Assignment — 1KB (&lt;&lt;=)</div>
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">exercise_13.py</span>
+      <span class="badge-medium">MEDIUM</span>
+      <div class="ex-title">Bitwise shift — 1024 байт</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-task">`unit &lt;&lt;= 10` нь 2^10 = 1024 (1KB).</div>
+      <div class="code-block">
+        <div class="code-header"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span> &nbsp;exercise_13.py</div>
+        <pre class="aa-pre">def main():
+    unit = 1
+    unit &lt;&lt;= 10
+    print(f&quot;1KB-ийн байт: {unit}&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</pre>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="lesson-group">
+  <div class="lesson-title"><span>Хичээл 8</span> While + function — волейбол</div>
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">score.py</span>
+      <span class="badge-medium">MEDIUM</span>
+      <div class="ex-title">Оноо тоологч</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-task">25+ оноо, 2+ зөрүү — ялагч.</div>
+      <div class="code-block">
+        <div class="code-header"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span> &nbsp;score.py</div>
+        <pre class="aa-pre">score_a = 0
+score_b = 0
+
+print(&quot;Воллейболын оноо тоологч эхэллээ!&quot;)
+print(&quot;A эсвэл B оруулна уу. Гарахыг: Q&quot;)
+
+
+def check_winner(a, b):
+    if (a &gt;= 25 or b &gt;= 25) and abs(a - b) &gt;= 2:
+        return &quot;A&quot; if a &gt; b else &quot;B&quot;
+    return None
+
+
+while True:
+    print(f&quot;A: {score_a}  |  B: {score_b}&quot;)
+    point = input(&quot;Оноо авсан баг (A/B/Q): &quot;).upper()
+
+    if point == &quot;Q&quot;:
+        print(&quot;Тоглоом зогслоо.&quot;)
+        break
+    elif point == &quot;A&quot;:
+        score_a += 1
+    elif point == &quot;B&quot;:
+        score_b += 1
+    else:
+        print(&quot;Зөвхөн A эсвэл B оруулна уу!&quot;)
+        continue
+
+    winner = check_winner(score_a, score_b)
+    if winner:
+        print(f&quot;Баг {winner} яллаа! ({score_a} : {score_b})&quot;)
+        break
+</pre>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="lesson-group">
+  <div class="lesson-title"><span>Хичээл 9</span> Turtle graphics</div>
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">polygon.py</span>
+      <span class="badge-easy">EASY</span>
+      <div class="ex-title">Олон өнцөгт</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-task">Өнцгийн тоогоор `forward` / `left`.</div>
+      <div class="code-block">
+        <div class="code-header"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span> &nbsp;polygon.py</div>
+        <pre class="aa-pre">import turtle
+
+t = turtle.Turtle()
+t.shape(&quot;turtle&quot;)
+t.color(&quot;blue&quot;)
+t.speed(5)
+
+n = int(input(&quot;Хэдэн өнцөгт зурах вэ? &quot;))
+angle = 360 / n
+
+for i in range(n):
+    t.forward(100)
+    t.left(angle)
+</pre>
+      </div>
+    </div>
+  </div>
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">stars.py</span>
+      <span class="badge-medium">MEDIUM</span>
+      <div class="ex-title">Санамсаргүй одод</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-task">`draw_star`, random байрлал.</div>
+      <div class="code-block">
+        <div class="code-header"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span> &nbsp;stars.py</div>
+        <pre class="aa-pre">import turtle
+import random
+
+t = turtle.Turtle()
+t.speed(0)
+colors = [&quot;red&quot;, &quot;blue&quot;, &quot;yellow&quot;, &quot;green&quot;, &quot;purple&quot;, &quot;orange&quot;]
+
+
+def draw_star(size):
+    for i in range(5):
+        t.forward(size)
+        t.right(144)
+
+
+for i in range(10):
+    x = random.randint(-200, 200)
+    y = random.randint(-200, 200)
+    s = random.randint(20, 100)
+
+    t.penup()
+    t.goto(x, y)
+    t.pendown()
+    t.color(random.choice(colors))
+    draw_star(s)
+</pre>
+      </div>
+    </div>
+  </div>
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">spiral.py</span>
+      <span class="badge-hard">HARD</span>
+      <div class="ex-title">Өнгөт спираль</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-task">`bgcolor`, давталт, `left(59)`.</div>
+      <div class="code-block">
+        <div class="code-header"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span> &nbsp;spiral.py</div>
+        <pre class="aa-pre">import turtle
+
+t = turtle.Turtle()
+t.speed(0)
+turtle.bgcolor(&quot;black&quot;)
+
+colors = [&quot;red&quot;, &quot;orange&quot;, &quot;yellow&quot;, &quot;green&quot;, &quot;blue&quot;, &quot;purple&quot;]
+
+for x in range(200):
+    t.color(colors[x % 6])
+    t.forward(x)
+    t.left(59)
+</pre>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="lesson-group">
+  <div class="lesson-title"><span>Хичээл 10</span> Turtle Race</div>
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">turtle_race.py</span>
+      <span class="badge-easy">EASY</span>
+      <div class="ex-title">Уралдаан</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-task">4 turtle, санамсаргүй алхам, ялагч.</div>
+      <div class="code-block">
+        <div class="code-header"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span> &nbsp;turtle_race.py</div>
+        <pre class="aa-pre">import turtle
+from random import randint
+from time import sleep
+
+sc = turtle.Screen()
+sc.title(&quot;Turtle Race&quot;)
+sc.bgcolor(&quot;#0a0a14&quot;)
+sc.setup(700, 400)
+
+colors = [&quot;red&quot;, &quot;cyan&quot;, &quot;yellow&quot;, &quot;lime&quot;]
+y_pos = [120, 40, -40, -120]
+turtles = []
+
+for i in range(4):
+    t = turtle.Turtle()
+    t.shape(&quot;turtle&quot;)
+    t.color(colors[i])
+    t.shapesize(1.5, 1.5, 1)
+    t.speed(0)
+    t.penup()
+    t.goto(-300, y_pos[i])
+    t.pendown()
+    turtles.append(t)
+
+winner = None
+while winner is None:
+    for t in turtles:
+        t.forward(randint(1, 20))
+        if t.xcor() &gt;= 300:
+            winner = t.pencolor()
+            break
+    sleep(0.05)
+
+sleep(1)
+writer = turtle.Turtle()
+writer.hideturtle()
+writer.color(&quot;white&quot;)
+writer.write(winner + &quot; wins!&quot;, font=(&quot;Arial&quot;, 24, &quot;bold&quot;))
+</pre>
+      </div>
+    </div>
+  </div>
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">turtle_race_ex4.py</span>
+      <span class="badge-boss">BOSS</span>
+      <div class="ex-title">5 уралдаан — аварга</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-task">Оноо хуримтлуулах, эцсийн дүн.</div>
+      <div class="code-block">
+        <div class="code-header"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span> &nbsp;turtle_race_ex4.py</div>
+        <pre class="aa-pre">import turtle
+from random import randint
+from time import sleep
+
+sc = turtle.Screen()
+sc.title(&quot;5 Race Championship&quot;)
+sc.bgcolor(&quot;#0a0a14&quot;)
+sc.setup(700, 400)
+
+colors = [&quot;red&quot;, &quot;cyan&quot;, &quot;yellow&quot;, &quot;lime&quot;]
+y_pos = [120, 40, -40, -120]
+scores = {&quot;red&quot;: 0, &quot;cyan&quot;: 0, &quot;yellow&quot;: 0, &quot;lime&quot;: 0}
+
+turtles = []
+for i in range(4):
+    t = turtle.Turtle()
+    t.shape(&quot;turtle&quot;)
+    t.color(colors[i])
+    t.shapesize(1.5, 1.5, 1)
+    t.speed(0)
+    t.penup()
+    t.goto(-300, y_pos[i])
+    t.pendown()
+    turtles.append(t)
+
+for round_num in range(5):
+    for i, t in enumerate(turtles):
+        t.penup()
+        t.goto(-300, y_pos[i])
+        t.pendown()
+
+    winner = None
+    while winner is None:
+        for t in turtles:
+            t.forward(randint(1, 20))
+            if t.xcor() &gt;= 300:
+                winner = t.pencolor()
+                scores[winner] += 1
+                break
+        sleep(0.03)
+
+    print(&quot;Уралдаан &quot; + str(round_num + 1) + &quot;: &quot; + winner + &quot; яллаа&quot;)
+    sleep(1)
+
+champion = &quot;red&quot;
+for k in scores:
+    if scores[k] &gt; scores[champion]:
+        champion = k
+writer = turtle.Turtle()
+writer.hideturtle()
+writer.color(&quot;white&quot;)
+writer.write(
+    &quot;Champion: &quot; + champion + &quot; (&quot; + str(scores[champion]) + &quot;/5)&quot;,
+    font=(&quot;Arial&quot;, 18, &quot;bold&quot;),
+)
+</pre>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="lesson-group">
+  <div class="lesson-title"><span>Хичээл 11</span> Snake Game</div>
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">snake_game.py</span>
+      <span class="badge-easy">EASY</span>
+      <div class="ex-title">Могой — бүрэн код</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-task">Чиглэл, хоол, сегмент, хана, мөргөлдөөн.</div>
+      <div class="code-block">
+        <div class="code-header"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span> &nbsp;snake_game.py</div>
+        <pre class="aa-pre">import turtle
+import random
+from time import sleep
+
+sc = turtle.Screen()
+sc.title(&quot;Snake Game&quot;)
+sc.bgcolor(&quot;black&quot;)
+sc.setup(620, 620)
+sc.tracer(0)
+
+head = turtle.Turtle()
+head.shape(&quot;square&quot;)
+head.color(&quot;lime&quot;)
+head.speed(0)
+head.penup()
+head.goto(0, 0)
+
+
+def go_up():
+    head.setheading(90)
+
+
+def go_down():
+    head.setheading(270)
+
+
+def go_left():
+    head.setheading(180)
+
+
+def go_right():
+    head.setheading(0)
+
+
+sc.listen()
+sc.onkeypress(go_up, &quot;Up&quot;)
+sc.onkeypress(go_down, &quot;Down&quot;)
+sc.onkeypress(go_left, &quot;Left&quot;)
+sc.onkeypress(go_right, &quot;Right&quot;)
+
+food = turtle.Turtle()
+food.shape(&quot;circle&quot;)
+food.color(&quot;red&quot;)
+food.speed(0)
+food.penup()
+food.goto(100, 100)
+
+pen = turtle.Turtle()
+pen.hideturtle()
+pen.penup()
+pen.goto(0, 280)
+pen.color(&quot;white&quot;)
+
+score = 0
+segments = []
+
+
+def reset_game():
+    global score, segments
+    sleep(1)
+    head.goto(0, 0)
+    head.setheading(0)
+    for seg in segments:
+        seg.hideturtle()
+    segments.clear()
+    score = 0
+
+
+while True:
+    sc.update()
+    sleep(0.1)
+
+    for i in range(len(segments) - 1, 0, -1):
+        x = segments[i - 1].xcor()
+        y = segments[i - 1].ycor()
+        segments[i].goto(x, y)
+    if segments:
+        segments[0].goto(head.xcor(), head.ycor())
+
+    head.forward(20)
+
+    if head.distance(food) &lt; 20:
+        x = random.randint(-13, 13) * 20
+        y = random.randint(-13, 13) * 20
+        food.goto(x, y)
+        seg = turtle.Turtle()
+        seg.shape(&quot;square&quot;)
+        seg.color(&quot;green&quot;)
+        seg.speed(0)
+        seg.penup()
+        segments.append(seg)
+        score += 1
+        pen.clear()
+        pen.write(
+            &quot;Оноо: &quot; + str(score),
+            align=&quot;center&quot;,
+            font=(&quot;Arial&quot;, 18, &quot;bold&quot;),
+        )
+
+    if abs(head.xcor()) &gt; 300 or abs(head.ycor()) &gt; 300:
+        reset_game()
+
+    for seg in segments:
+        if head.distance(seg) &lt; 20:
+            reset_game()
+</pre>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="lesson-group">
+  <div class="lesson-title"><span>Хичээл 12</span> XO Game</div>
+  <div class="exercise-card">
+    <div class="ex-header">
+      <span class="ex-num">xo_game.py</span>
+      <span class="badge-easy">EASY</span>
+      <div class="ex-title">XO — сүлжээ, даралт</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-task">`board`, `WINS`, `handle_click`.</div>
+      <div class="code-block">
+        <div class="code-header"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span> &nbsp;xo_game.py</div>
+        <pre class="aa-pre">import turtle
+
+sc = turtle.Screen()
+sc.setup(660, 660)
+sc.title(&quot;XO Тоглоом&quot;)
+sc.bgcolor(&quot;#0a0f18&quot;)
+
+draw_t = turtle.Turtle()
+draw_t.hideturtle()
+draw_t.speed(0)
+draw_t.penup()
+msg_t = turtle.Turtle()
+msg_t.hideturtle()
+msg_t.speed(0)
+msg_t.penup()
+
+board = [&quot;&quot;] * 9
+player = &quot;X&quot;
+game_on = True
+scores = {&quot;X&quot;: 0, &quot;O&quot;: 0}
+
+CELLS = [
+    (-200, 200),
+    (0, 200),
+    (200, 200),
+    (-200, 0),
+    (0, 0),
+    (200, 0),
+    (-200, -200),
+    (0, -200),
+    (200, -200),
+]
+WINS = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+]
+
+
+def draw_grid():
+    draw_t.pensize(4)
+    draw_t.pencolor(&quot;#334155&quot;)
+    for x in [-100, 100]:
+        draw_t.goto(x, -300)
+        draw_t.pendown()
+        draw_t.goto(x, 300)
+        draw_t.penup()
+    for y in [-100, 100]:
+        draw_t.goto(-300, y)
+        draw_t.pendown()
+        draw_t.goto(300, y)
+        draw_t.penup()
+
+
+def draw_x(cx, cy):
+    draw_t.pensize(5)
+    draw_t.pencolor(&quot;#f472b6&quot;)
+    draw_t.goto(cx - 50, cy + 50)
+    draw_t.pendown()
+    draw_t.goto(cx + 50, cy - 50)
+    draw_t.penup()
+    draw_t.goto(cx + 50, cy + 50)
+    draw_t.pendown()
+    draw_t.goto(cx - 50, cy - 50)
+    draw_t.penup()
+
+
+def draw_o(cx, cy):
+    draw_t.pensize(5)
+    draw_t.pencolor(&quot;#38bdf8&quot;)
+    draw_t.goto(cx, cy - 50)
+    draw_t.pendown()
+    draw_t.circle(50)
+    draw_t.penup()
+
+
+def show_msg(text, color=&quot;white&quot;):
+    msg_t.clear()
+    msg_t.color(color)
+    msg_t.goto(0, -310)
+    msg_t.write(text, align=&quot;center&quot;, font=(&quot;Arial&quot;, 20, &quot;bold&quot;))
+
+
+def check_winner():
+    global game_on
+    for combo in WINS:
+        a, b, c = combo[0], combo[1], combo[2]
+        if board[a] == board[b] == board[c] and board[a] != &quot;&quot;:
+            game_on = False
+            scores[board[a]] += 1
+            show_msg(board[a] + &quot; яллаа!&quot;)
+            return
+    if &quot;&quot; not in board:
+        game_on = False
+        show_msg(&quot;Тэнцлээ!&quot;)
+
+
+def handle_click(x, y):
+    global player, board, game_on
+    if not game_on:
+        board = [&quot;&quot;] * 9
+        draw_t.clear()
+        msg_t.clear()
+        game_on = True
+        player = &quot;X&quot;
+        draw_grid()
+        return
+    for i, (cx, cy) in enumerate(CELLS):
+        if abs(x - cx) &lt; 100 and abs(y - cy) &lt; 100 and not board[i]:
+            board[i] = player
+            if player == &quot;X&quot;:
+                draw_x(cx, cy)
+            else:
+                draw_o(cx, cy)
+            check_winner()
+            if not game_on:
+                return
+            player = &quot;O&quot; if player == &quot;X&quot; else &quot;X&quot;
+            break
+
+
+draw_grid()
+sc.onclick(handle_click)
+</pre>
+      </div>
+    </div>
+  </div>
+</div>
+<footer class="aa-footer"><p><a href="advanced.html">← Advanced Python (интерактив)</a> · <a href="index.html">7–9-р анги</a> · <a href="../web/index.html">Эцэг эхийн хэсэг</a></p><p>Сервер: <code>cd parent_teacher_day && python3 -m http.server 8765</code> → <code>/python_exercises/advanced_answers.html</code></p><p style="margin-top:0.5rem;font-size:0.78rem">Шинэчлэх: <code>python3 generate_advanced_answers.py</code></p></footer>
+</div></div>
+</body>
+</html>
