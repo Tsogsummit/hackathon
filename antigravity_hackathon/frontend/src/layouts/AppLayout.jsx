@@ -85,9 +85,12 @@ export default function AppLayout() {
   return (
     <div className={`es-shell ${sidebarOpen ? "es-shell-sidebar-open" : ""}`}>
       <aside className="es-sidebar">
-        <div style={{ marginBottom: "2rem", padding: "0 8px" }}>
-          <div className="es-sidebar-title">Stuto</div>
-          <div className="es-sidebar-subtitle">AI School Management</div>
+        <div style={{ marginBottom: "2rem", padding: "0 8px", display: "flex", alignItems: "center", gap: "12px" }}>
+          <img src="/logo.webp" alt="Stuto Logo" style={{ width: 36, height: 36, borderRadius: 8, objectFit: "contain" }} />
+          <div>
+            <div className="es-sidebar-title" style={{ margin: 0 }}>Stuto</div>
+            <div className="es-sidebar-subtitle" style={{ margin: 0 }}>AI School</div>
+          </div>
         </div>
 
         <nav style={{ flex: 1 }}>

@@ -6,7 +6,10 @@ import { useAuthStore } from "../store/authStore.js";
 const MODEL_BASE = "https://cdn.jsdelivr.net/npm/@vladmandic/face-api/model";
 const UNKNOWN_CAPTURE_INTERVAL_MS = 6000;
 const MAX_UNKNOWN_LOG = 12;
-const MATCH_THRESHOLD = 0.58;
+const DEFAULT_MATCH_THRESHOLD = 0.58;
+const DETECTOR_INPUT_SIZE = 416;
+const DETECTOR_SCORE_THRESHOLD = 0.4;
+const MIN_FACE_AREA_RATIO_FOR_MATCH = 0.03;
 
 function clamp(n, min, max) {
   return Math.max(min, Math.min(max, n));
@@ -46,6 +49,8 @@ export default function AttentionCameraPage() {
   const knownDescriptorsRef = useRef([]);
   const unknownCaptureTsRef = useRef(0);
   const faceApiRef = useRef(null);
+  const canvasRef = useRef(null);
+  const matchStreakRef = useRef({});
 
   const [phase, setPhase] = useState("idle");
   const [err, setErr] = useState("");
@@ -62,6 +67,7 @@ export default function AttentionCameraPage() {
   const [markAbsentOthers, setMarkAbsentOthers] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uploadingUnknown, setUploadingUnknown] = useState(false);
+  const [matchThreshold, setMatchThreshold] = useState(DEFAULT_MATCH_THRESHOLD);
   const scoreHistoryRef = useRef([]);
 
   const detectedIds = useMemo(() => Object.keys(detectedStats).map(Number), [detectedStats]);
@@ -150,20 +156,24 @@ export default function AttentionCameraPage() {
     const valid = roster.filter((r) => r.has_face_profile && r.image_url);
     const descriptors = [];
     for (const r of valid) {
+      let objUrl = null;
       try {
-        const resp = await fetch(r.image_url, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        // image_url can be either local API (needs Authorization) or remote http(s) (usually public).
+        // Try with Authorization first, then fallback to no-auth if that fails (helps remote CDN images).
+        let resp = await fetch(r.image_url, { headers: { Authorization: `Bearer ${token}` } });
+        if (!resp.ok) resp = await fetch(r.image_url);
         if (!resp.ok) continue;
         const blob = await resp.blob();
-        const objUrl = URL.createObjectURL(blob);
+        objUrl = URL.createObjectURL(blob);
         const img = await faceapi.fetchImage(objUrl);
         // Use TinyFaceDetector explicitly (we load only tiny model in this page).
         const dets = await faceapi
-          .detectAllFaces(img, new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.35 }))
+          .detectAllFaces(
+            img,
+            new faceapi.TinyFaceDetectorOptions({ inputSize: DETECTOR_INPUT_SIZE, scoreThreshold: 0.35 }),
+          )
           .withFaceLandmarks()
           .withFaceDescriptors();
-        URL.revokeObjectURL(objUrl);
         if (dets?.length) {
           const best = dets.sort(
             (a, b) => b.detection.box.width * b.detection.box.height - a.detection.box.width * a.detection.box.height,
@@ -176,12 +186,14 @@ export default function AttentionCameraPage() {
         }
       } catch {
         // skip invalid profile image
+      } finally {
+        if (objUrl) URL.revokeObjectURL(objUrl);
       }
     }
     return descriptors;
   }
 
-  function bestMatchFor(descriptor) {
+  function bestMatchFor(descriptor, threshold) {
     const faceapi = faceApiRef.current;
     if (!faceapi) return null;
     let best = null;
@@ -191,7 +203,7 @@ export default function AttentionCameraPage() {
         best = { studentId: item.studentId, distance };
       }
     }
-    if (!best || best.distance > MATCH_THRESHOLD) return null;
+    if (!best || best.distance > threshold) return null;
     return best;
   }
 
@@ -266,20 +278,86 @@ export default function AttentionCameraPage() {
         if (!v || v.readyState < 2) return;
         const faceapi = faceApiRef.current;
         if (!faceapi) return;
+
         const all = await faceapi
-          .detectAllFaces(v, new faceapi.TinyFaceDetectorOptions({ scoreThreshold: 0.45 }))
+          .detectAllFaces(
+            v,
+            new faceapi.TinyFaceDetectorOptions({
+              inputSize: DETECTOR_INPUT_SIZE,
+              scoreThreshold: DETECTOR_SCORE_THRESHOLD,
+            }),
+          )
           .withFaceLandmarks()
           .withFaceDescriptors();
         const totalFaces = all.length;
         let unknown = 0;
         const matched = [];
+        const frameMatchedIds = new Set();
+
+        const c = canvasRef.current;
+        const ctx = c ? c.getContext("2d") : null;
+        if (c && (c.width !== v.videoWidth || c.height !== v.videoHeight)) {
+          c.width = v.videoWidth;
+          c.height = v.videoHeight;
+        }
+        if (ctx) ctx.clearRect(0, 0, c.width, c.height);
+
         for (const d of all) {
-          const best = knownDescriptorsRef.current.length ? bestMatchFor(d.descriptor) : null;
+          const vw = Math.max(1, v.videoWidth || 1);
+          const vh = Math.max(1, v.videoHeight || 1);
+          const box = d.detection.box;
+          const faceAreaRatio = (box.width * box.height) / (vw * vh);
+          const best =
+            knownDescriptorsRef.current.length && faceAreaRatio >= MIN_FACE_AREA_RATIO_FOR_MATCH
+              ? bestMatchFor(d.descriptor, matchThreshold)
+              : null;
+          let boxName = "Unknown";
+          let boxColor = "#ef4444";
+
           if (!best) {
             unknown += 1;
             captureUnknownShot(v);
           } else {
-            matched.push(best);
+            // Require the same match to appear in consecutive frames to reduce flicker/false positives.
+            const streakMap = matchStreakRef.current;
+            const prevStreak = Number(streakMap[best.studentId] || 0);
+            const nextStreak = prevStreak + 1;
+            streakMap[best.studentId] = nextStreak;
+            frameMatchedIds.add(best.studentId);
+            if (nextStreak >= 2) {
+              matched.push(best);
+              const studentLabel = knownDescriptorsRef.current.find((k) => k.studentId === best.studentId)?.name || "Сурагч";
+              boxName = `${studentLabel}`;
+              boxColor = "#10b981";
+            } else {
+              // Show "Matching..." while building confidence
+              boxName = "Matching...";
+              boxColor = "#f59e0b";
+            }
+          }
+
+          if (ctx) {
+            // Video is mirrored for user (scaleX(-1)), so coordinates on un-mirrored canvas must be inverted in X
+            const flippedX = c.width - box.x - box.width;
+            ctx.strokeStyle = boxColor;
+            ctx.lineWidth = 3;
+            ctx.strokeRect(flippedX, box.y, box.width, box.height);
+
+            ctx.fillStyle = boxColor;
+            ctx.font = "bold 20px sans-serif";
+            const textWidth = ctx.measureText(boxName).width;
+            // draw background for text
+            ctx.fillRect(flippedX, box.y - 28, textWidth + 12, 28);
+            ctx.fillStyle = "#fff";
+            ctx.fillText(boxName, flippedX + 6, box.y - 8);
+          }
+        }
+        // Reset streaks for ids not seen in this frame
+        if (knownDescriptorsRef.current.length) {
+          const streakMap = matchStreakRef.current;
+          for (const k of Object.keys(streakMap)) {
+            const sid = Number(k);
+            if (!frameMatchedIds.has(sid)) streakMap[sid] = 0;
           }
         }
         if (unknown > 0) setUnknownCount((x) => x + unknown);
@@ -328,7 +406,7 @@ export default function AttentionCameraPage() {
             return next;
           });
         }
-      }, 1200);
+      }, 900);
     } catch (e) {
       // If camera stream is already active, keep preview on and only report recognition/init error.
       if (streamRef.current) {
@@ -462,6 +540,7 @@ export default function AttentionCameraPage() {
       <div className="es-section">
         <div style={{ position: "relative", borderRadius: 12, overflow: "hidden", background: "#000", maxWidth: 900 }}>
           <video ref={videoRef} style={{ width: "100%", aspectRatio: "16/9", objectFit: "cover", transform: "scaleX(-1)" }} />
+          <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", pointerEvents: "none", zIndex: 10 }} />
           {phase === "running" && (
             <div
               style={{

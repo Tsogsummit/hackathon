@@ -17,11 +17,11 @@ def get_redis() -> redis.Redis:
 
 
 def job_key(job_id: str) -> str:
-    return f"edusmart:job:{job_id}"
+    return f"stuto:job:{job_id}"
 
 
 def rate_limit_key(teacher_id: int) -> str:
-    return f"edusmart:gemini_daily:{teacher_id}"
+    return f"stuto:gemini_daily:{teacher_id}"
 
 
 def set_job(job_id: str, data: dict[str, Any], ttl_seconds: int = 86400) -> None:

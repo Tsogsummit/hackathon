@@ -60,7 +60,7 @@ async def _save_upload_or_url(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Зөвшөөрөгдсөн формат: WAV, MP3, M4A, OGG, WEBM",
             )
-        tmpdir = tempfile.TemporaryDirectory(prefix="edusmart_upload_")
+        tmpdir = tempfile.TemporaryDirectory(prefix="stuto_upload_")
         dest = Path(tmpdir.name) / f"upload{suffix}"
         content = await audio.read()
         settings = get_settings()
@@ -85,7 +85,7 @@ async def _save_upload_or_url(
         max_b = settings.max_audio_size_mb * 1024 * 1024
         path_suffix = Path(parsed.path).suffix.lower() or ".wav"
         ext = path_suffix if path_suffix in audio_service.ALLOWED_EXTENSIONS else ".mp3"
-        tmpdir = tempfile.TemporaryDirectory(prefix="edusmart_url_")
+        tmpdir = tempfile.TemporaryDirectory(prefix="stuto_url_")
         dest = Path(tmpdir.name) / f"remote{ext}"
         total = 0
         try:

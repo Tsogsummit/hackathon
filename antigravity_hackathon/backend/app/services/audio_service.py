@@ -120,7 +120,7 @@ def prepare_audio_paths(source_path: Path, original_suffix: str) -> tuple[list[P
     """
     Returns list of WAV chunk paths to send to STT and a temp dir handle (caller must cleanup).
     """
-    tmp = tempfile.TemporaryDirectory(prefix="edusmart_audio_")
+    tmp = tempfile.TemporaryDirectory(prefix="stuto_audio_")
     work = Path(tmp.name)
     try:
         src = Path(shutil.copy2(source_path, work / f"source{original_suffix}"))

@@ -30,7 +30,7 @@ export const useAuthStore = create(
       },
     }),
     {
-      name: "edusmart-auth",
+      name: "stuto-auth",
       partialize: (s) => ({ token: s.token }),
     }
   )

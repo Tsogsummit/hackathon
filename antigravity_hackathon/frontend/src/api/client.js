@@ -37,7 +37,7 @@ export async function apiFetch(path, { method = "GET", body, token: tokenOpt, he
 
 function requireTokenFromStore() {
   try {
-    const raw = localStorage.getItem("edusmart-auth");
+    const raw = localStorage.getItem("stuto-auth");
     if (!raw) return null;
     const p = JSON.parse(raw);
     return p?.state?.token ?? null;

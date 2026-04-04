@@ -29,7 +29,7 @@ export const useLessonAIStore = create(
       setField: (patch) => set(patch),
     }),
     {
-      name: "edusmart-lesson-ai-draft",
+      name: "stuto-lesson-ai-draft",
       partialize: (state) => ({
         step: state.step,
         date: state.date,
