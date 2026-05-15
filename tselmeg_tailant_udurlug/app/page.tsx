@@ -4,6 +4,7 @@ import { PublicShell } from "@/components/PublicShell";
 import { eventTitle, schoolName } from "@/lib/content";
 
 const buttons = [
+  { href: "/map", label: "Талбайн зураглал", helper: "Анги, тайз, саравч", icon: MapPinned },
   { href: "/groups/high", label: "Ахлах бүлэг", helper: "9-12 анги", icon: GraduationCap },
   { href: "/groups/middle", label: "Дунд бүлэг", helper: "6-8 анги", icon: School },
   { href: "/groups/primary", label: "Бага бүлэг", helper: "Бага анги", icon: BookOpenCheck },
