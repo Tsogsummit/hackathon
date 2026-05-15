@@ -1,0 +1,28 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="320" height="320" fill="#183248"/>
+  <circle cx="160" cy="160" r="136" fill="#183248" stroke="white" stroke-width="12"/>
+  <circle cx="160" cy="160" r="116" stroke="#DDEAF2" stroke-width="2"/>
+  <path d="M86 122c34 2 55-7 74-28 19 21 40 30 74 28v54c0 46-30 78-74 98-44-20-74-52-74-98v-54Z" fill="#183248" stroke="white" stroke-width="9" stroke-linejoin="round"/>
+  <path d="M110 132c20 0 35-5 50-18 15 13 30 18 50 18v42c0 32-19 55-50 71-31-16-50-39-50-71v-42Z" stroke="#DDEAF2" stroke-width="4" stroke-linejoin="round"/>
+  <path d="M160 120v126" stroke="white" stroke-width="4"/>
+  <rect x="139" y="112" width="42" height="31" rx="4" fill="white"/>
+  <path d="M150 128l-5-4 5-4M170 120l5 4-5 4M157 130l6-14" stroke="#183248" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="160" cy="184" r="20" stroke="white" stroke-width="4"/>
+  <circle cx="160" cy="151" r="4" fill="white"/>
+  <circle cx="132" cy="168" r="4" fill="white"/>
+  <circle cx="188" cy="168" r="4" fill="white"/>
+  <circle cx="132" cy="200" r="4" fill="white"/>
+  <circle cx="188" cy="200" r="4" fill="white"/>
+  <path d="M160 164v40M143 174l34 20M177 174l-34 20" stroke="#DDEAF2" stroke-width="3" stroke-linecap="round"/>
+  <path id="topText" d="M62 148a98 98 0 0 1 196 0" />
+  <text font-family="Arial, sans-serif" font-size="15" font-weight="700" letter-spacing="1.4" fill="white">
+    <textPath href="#topText" startOffset="50%" text-anchor="middle">TSELMEG DIGITAL INTERNATIONAL SCHOOL</textPath>
+  </text>
+  <path id="bottomText" d="M250 190a98 98 0 0 1-180 0" />
+  <text font-family="Arial, sans-serif" font-size="17" font-weight="800" letter-spacing="2" fill="white">
+    <textPath href="#bottomText" startOffset="50%" text-anchor="middle">TECH TOO HIGH</textPath>
+  </text>
+  <circle cx="42" cy="160" r="6" fill="#183248" stroke="white" stroke-width="3"/>
+  <circle cx="278" cy="160" r="6" fill="#183248" stroke="white" stroke-width="3"/>
+  <path d="M78 238l-16 16M242 238l16 16" stroke="white" stroke-width="3" stroke-linecap="round"/>
+</svg>
