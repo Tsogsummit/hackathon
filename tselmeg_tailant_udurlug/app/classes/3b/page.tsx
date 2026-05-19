@@ -2,7 +2,7 @@ import { StaticClassReport, type ClassReportSection } from "@/components/StaticC
 
 const sections: ClassReportSection[] = [
   {
-    id: "sports",
+    id: "sports-day",
     tone: "blue",
     icon: "trophy",
     label: "Спорт",
@@ -15,7 +15,10 @@ const sections: ClassReportSection[] = [
       { badge: "Алтан медаль", name: "А.Урангоо", event: "100 метр гүйлт - эмэгтэй төрөл" },
       { badge: "Алтан медаль", name: "М.Хүсэлбаатар", event: "Гар дарж сунайх - эрэгтэй төрөл" },
     ],
-    images: [],
+    images: [
+      { src: "/slides/3b/image2.jpeg", caption: "Байрнаас уртын харайлт" },
+      { src: "/slides/3b/image3.jpeg", caption: "Сургуулийн спортын наадам" },
+    ],
   },
   {
     id: "arts",
@@ -24,9 +27,10 @@ const sections: ClassReportSection[] = [
     label: "Урлаг",
     title: "Урлагийн наадам",
     achievements: [
-      { badge: "Мөнгөн медаль", name: "Э.Билэгт, Б.Одбаяр, Б.Азбаяр, Л.Бөхбилэгт, Ц.Тэмүүжин", event: "Язгуур урлаг" },
+      { badge: "Мөнгөн медаль", name: "Э.Билэгт, Б.Одбаяр, Б.Азбаяр, Л.Бөхбилэгт, Ц.Тэмүүжин, М.Билгүтэ", event: "Язгуур урлаг" },
       { badge: "1-р байр", name: "А.Урангоо, Б.Мишээл, Э.Мөнх-Од, Ү.Чинбилэг, Б.Эрхэтгүн, О.Нинжин", event: "Бөөгийн бүжиг" },
       { badge: "1-р байр", name: "Э.Мөнх-Од", event: "Гоцлол бүжиг" },
+      { badge: "Алтан медаль", name: "Э.Мөнх-Од, А.Урангоо", event: "Хамтлаг бүжиг" },
     ],
     images: [],
   },
@@ -35,28 +39,43 @@ const sections: ClassReportSection[] = [
     tone: "amber",
     icon: "award",
     label: "Манлайлал",
-    title: "Сургуулийн оны шилдэг сурагчид",
+    title: "Сургуулийн оны шилдэг сурагч",
     achievements: [
-      { badge: "Оны тэргүүний сурагч", name: "Б.Азбаяр", event: "Сургуулийн оны шилдэг сурагч" },
-      { badge: "Оны тэргүүний сурагч", name: "Э.Мөнх-Од", event: "Сургуулийн оны шилдэг сурагч" },
+      { badge: "Оны тэргүүний сурагч", name: "Б.Азбаяр, Э.Мөнх-Од", event: "Сургуулийн оны шилдэг сурагч" },
+      { badge: "Хөгжимлөг хүүхэд", name: "А.Урангоо, О.Нинжин" },
     ],
     images: [],
   },
   {
-    id: "english",
+    id: "drawing",
+    tone: "green",
+    icon: "medal",
+    label: "Гар зураг",
+    title: "Монгол бахархал гар зургийн уралдаан",
+    achievements: [
+      { badge: "Алтан медаль", name: "М.Билгүтэ", event: "Монгол бахархал гар зургийн уралдаан" },
+    ],
+    images: [],
+  },
+  {
+    id: "little-spellers",
     tone: "sky",
     icon: "book",
     label: "Англи хэл",
-    title: "Little Spellers үсэглэлийн тэмцээн",
+    title: "Little Spellers - Англи хэлний үсэглэлийн тэмцээн",
     achievements: [
       { badge: "1-р байр", name: "Э.Мөнх-Од", event: "Шилдэг үсэглэгч" },
+      { badge: "2-р байр", name: "О.Нинжин", event: "Шилдэг үсэглэгч" },
     ],
-    images: [],
+    images: [
+      { src: "/slides/3b/image4.jpeg", caption: "Little Spellers тэмцээн" },
+      { src: "/slides/3b/image5.jpeg", caption: "Little Spellers амжилт" },
+    ],
   },
   {
     id: "taekwondo",
     tone: "red",
-    icon: "medal",
+    icon: "trophy",
     label: "Таеквондо",
     title: "Монгол Улсын аварга шалгаруулах тэмцээн",
     achievements: [
@@ -65,21 +84,30 @@ const sections: ClassReportSection[] = [
     images: [],
   },
   {
-    id: "math",
+    id: "kangaroo",
+    tone: "teal",
+    icon: "award",
+    label: "Математик",
+    title: "Кенгуру математикийн цахим сорилго",
+    achievements: [
+      { badge: "1-р зэрэг", name: "Б.Одбаяр, Б.Азбаяр, Э.Мөнх-Од, О.Нинжин", event: "Кенгуру математикийн цахим сорилго" },
+    ],
+    images: [],
+  },
+  {
+    id: "amo",
     tone: "purple",
     icon: "medal",
-    label: "Математик",
-    title: "Кенгуру болон АМО олон улсын олимпиад",
+    label: "Олимпиад",
+    title: "АМО олон улсын олимпиад",
     achievements: [
-      { badge: "1-р зэрэг", name: "Б.Одбаяр", event: "Кенгуру математикийн цахим сорилго" },
-      { badge: "1-р зэрэг", name: "Б.Азбаяр", event: "Кенгуру математикийн цахим сорилго" },
       { badge: "Хүрэл медаль", name: "Б.Азбаяр", event: "АМО олон улсын олимпиад" },
     ],
     images: [],
   },
 ];
 
-export default function ThreeBPage() {
+export default function Class3BPage() {
   return (
     <StaticClassReport
       groupLabel="Бага бүлэг"
@@ -88,11 +116,11 @@ export default function ThreeBPage() {
       maleStudents={15}
       femaleStudents={5}
       teacher="Э.Оюунбилэг"
+      coverImage={{ src: "/slides/3b/image1.png", alt: "3Б анги", caption: "Э.Оюунбилэг багштай 3Б анги" }}
       intro={
         <>
-          Э.Оюунбилэг багштай 3Б анги нь <span className="font-black text-brand-navy">15 эрэгтэй, 5 эмэгтэй нийт 20 сурагчтай</span>.
-          Ангийн сурагчид хичээл сурлага, урлаг, спортын авьяастай, хүмүүжил төлөвшил сайтай бөгөөд анги болон сургуулиас
-          зохион байгуулдаг үйл ажиллагаанд идэвхтэй оролцдог сургуулийн шилдэг хамт олны нэг юм.
+          Ангийн нийт сурагчид хичээл сурлага, урлаг, спортын авьяастай, хүмүүжил төлөвшил сайтай бөгөөд анги,
+          сургууль, улс орноос зохион байгуулдаг үйл ажиллагаанд идэвхтэй оролцдог сургуулийн шилдэг хамт олны нэг юм.
         </>
       }
       sections={sections}

@@ -1,65 +1,53 @@
-import Image from "next/image";
-import { notFound } from "next/navigation";
-import { Trophy, Users, Star, Award, Medal, BookOpen } from "lucide-react";
-import { PublicShell } from "@/components/PublicShell";
-import { StaticClassReport } from "@/components/StaticClassReport";
-import { prisma } from "@/lib/prisma";
+import { StaticClassReport, type ClassReportSection } from "@/components/StaticClassReport";
 
-// ─── Slide data extracted from 7b.docx ────────────────────────────
-const slides = [
+const sections: ClassReportSection[] = [
   {
     id: "sports",
-    icon: Trophy,
-    color: "brand-blue",
-    bg: "from-blue-50 to-white",
-    border: "border-blue-200",
-    label: "Спорт",
+    tone: "blue",
+    icon: "trophy",
+    label: "Спортын амжилт",
     title: "Намрын спартакиад",
     achievements: [
-      { name: "Б.Баяр", event: "100м гүйлт эрэгтэй", place: 2 },
-      { name: "7Б анги", event: "Буухиа гүйлт", place: 2 },
-      { name: "Т.Гэгээнсувд", event: "100м гүйлт эмэгтэй", place: 3 },
-      { name: "7Б анги", event: "Олс таталт", place: 2 },
+      { badge: "2-р байр", name: "Б. Баяр", event: "100м гүйлт, эрэгтэй төрөл" },
+      { badge: "2-р байр", name: "7Б анги", event: "Буухиа гүйлт" },
+      { badge: "3-р байр", name: "Т. Гэгээнсувд", event: "100м гүйлт, эмэгтэй төрөл" },
+      { badge: "2-р байр", name: "7Б анги", event: "Олс таталт" },
     ],
     images: [
       { src: "/slides/7b/image2.jpg", caption: "Намрын спартакиад" },
-      { src: "/slides/7b/image3.jpg", caption: "Спортын тэмцээн" },
-      { src: "/slides/7b/image4.jpg", caption: "Спортын тэмцээн" },
+      { src: "/slides/7b/image3.jpg", caption: "Спортын тэмцээний амжилт" },
+      { src: "/slides/7b/image4.jpg", caption: "Спортын багийн оролцоо" },
     ],
   },
   {
     id: "arts",
-    icon: Star,
-    color: "purple-600",
-    bg: "from-purple-50 to-white",
-    border: "border-purple-200",
-    label: "Урлаг",
+    tone: "purple",
+    icon: "star",
+    label: "Урлагийн амжилт",
     title: "Урлагийн үзлэг",
     achievements: [
-      { name: "7Б анги", event: "Найрал дуу", place: 1 },
-      { name: "7Б анги", event: "Хамтлаг бүжиг", place: 2 },
-      { name: "7Б анги", event: "Язгуур урлаг", place: 3 },
-      { name: "7Б анги", event: "Гоцлол дуу", place: 4 },
-      { name: "7Б анги", event: "Гоцлол бүжиг", place: 4 },
+      { badge: "1-р байр", name: "7Б анги", event: "Найрал дуу" },
+      { badge: "2-р байр", name: "7Б анги", event: "Хамтлаг бүжиг" },
+      { badge: "3-р байр", name: "7Б анги", event: "Язгуур урлаг" },
+      { badge: "4-р байр", name: "7Б анги", event: "Гоцлол дуу" },
+      { badge: "4-р байр", name: "7Б анги", event: "Гоцлол бүжиг" },
     ],
     images: [
-      { src: "/slides/7b/image5.png", caption: "Урлагийн үзлэг" },
-      { src: "/slides/7b/image6.png", caption: "Урлагийн үзлэг" },
-      { src: "/slides/7b/image7.png", caption: "Урлагийн үзлэг" },
-      { src: "/slides/7b/image8.png", caption: "Урлагийн үзлэг" },
-      { src: "/slides/7b/image9.png", caption: "Урлагийн үзлэг" },
+      { src: "/slides/7b/image5.png", caption: "Урлагийн үзлэг - Найрал дуу" },
+      { src: "/slides/7b/image6.png", caption: "Урлагийн үзлэг - Хамтлаг бүжиг" },
+      { src: "/slides/7b/image7.png", caption: "Урлагийн үзлэг - Язгуур урлаг" },
+      { src: "/slides/7b/image8.png", caption: "Урлагийн үзлэг - Гоцлол дуу" },
+      { src: "/slides/7b/image9.png", caption: "Урлагийн үзлэг - Гоцлол бүжиг" },
     ],
   },
   {
-    id: "math",
-    icon: BookOpen,
-    color: "brand-sky",
-    bg: "from-sky-50 to-white",
-    border: "border-sky-200",
-    label: "Математик & Олимпиад",
-    title: "Ангиараа бодлого бодох уралдаан & Кенгуру олимпиад",
+    id: "math-team",
+    tone: "sky",
+    icon: "book",
+    label: "Сурлагын амжилт",
+    title: "Ангиараа бодлого бодох уралдаан",
     achievements: [
-      { name: "7Б анги", event: "6-7 ангийн ангиараа бодлого бодох уралдаан", place: 1 },
+      { badge: "1-р байр", name: "7Б анги", event: "6-7-р ангийн ангиараа бодлого бодох уралдаан" },
     ],
     images: [
       { src: "/slides/7b/image10.jpg", caption: "Ангиараа бодлого бодох уралдаан" },
@@ -67,129 +55,108 @@ const slides = [
   },
   {
     id: "undarga",
-    icon: Award,
-    color: "amber-600",
-    bg: "from-amber-50 to-white",
-    border: "border-amber-200",
-    label: "Сурагч Ж.Ундарга",
-    title: "Ж.Ундарга — Олон талын амжилт",
+    tone: "amber",
+    icon: "award",
+    label: "Хувийн амжилт",
+    title: "Ж. Ундарга",
     achievements: [
-      { name: "Ж.Ундарга", event: "Үндэсний бичгийн 'Цэвэр сайхан бичигтэн'", place: 0, special: "Шагнагдсан" },
-      { name: "Ж.Ундарга", event: "Кенгуру-2026 математикын олимпиад (цахим)", place: 2 },
-      { name: "Ж.Ундарга", event: "Кенгуру-2026 математикын олимпиад (танхим)", place: 2 },
+      { badge: "Шагнал", name: "Ж. Ундарга", event: "Үндэсний бичгийн “Цэвэр сайхан бичигтэн”." },
+      { badge: "2-р зэрэг", name: "Ж. Ундарга", event: "Кенгуру-2026 математикийн олимпиад, цахим." },
+      { badge: "2-р зэрэг", name: "Ж. Ундарга", event: "Кенгуру-2026 математикийн олимпиад, танхим." },
     ],
     images: [
-      { src: "/slides/7b/image11.jpeg", caption: "Ж.Ундарга" },
+      { src: "/slides/7b/image11.jpeg", caption: "Ж. Ундарга - Үндэсний бичиг, Кенгуру олимпиад" },
     ],
   },
   {
-    id: "uyangg",
-    icon: Star,
-    color: "green-600",
-    bg: "from-green-50 to-white",
-    border: "border-green-200",
-    label: "Сурагч Г.Уянга",
-    title: "Г.Уянга — Зураг & Математик & Шатар",
+    id: "uyangaa",
+    tone: "green",
+    icon: "star",
+    label: "Хувийн амжилт",
+    title: "Г. Уянга",
     achievements: [
-      { name: "Г.Уянга", event: "'Монгол бахархал' гар зургийн уралдаан", place: 1 },
-      { name: "Г.Уянга", event: "Кенгуру-2026 математикын олимпиад", place: 1 },
-      { name: "Г.Уянга", event: "Кенгуру-2026 математикын олимпиад (танхим)", place: 3 },
-      { name: "Г.Уянга", event: "Ангийн шатрын аварга", place: 1 },
-      { name: "Г.Уянга", event: "Ангийн даамны аварга", place: 2 },
+      { badge: "Алтан медаль", name: "Г. Уянга", event: "“Монгол бахархал” гар зургийн уралдаан." },
+      { badge: "1-р зэрэг", name: "Г. Уянга", event: "Кенгуру-2026 математикийн олимпиад." },
+      { badge: "3-р зэрэг", name: "Г. Уянга", event: "Кенгуру-2026 математикийн олимпиад, танхим." },
+      { badge: "1-р байр", name: "Г. Уянга", event: "Ангийн шатрын аварга." },
+      { badge: "2-р байр", name: "Г. Уянга", event: "Ангийн даамны аварга." },
     ],
     images: [
-      { src: "/slides/7b/image12.jpeg", caption: "Г.Уянга" },
+      { src: "/slides/7b/image12.jpeg", caption: "Г. Уянга - Зураг, математик, шатар" },
     ],
   },
   {
-    id: "tselmun",
-    icon: Star,
-    color: "pink-600",
-    bg: "from-pink-50 to-white",
-    border: "border-pink-200",
-    label: "Сурагч Б.Цэлмүүн",
-    title: "Б.Цэлмүүн — Урлаг & Математик",
+    id: "tselmuun",
+    tone: "pink",
+    icon: "medal",
+    label: "Хувийн амжилт",
+    title: "Б. Цэлмүүн",
     achievements: [
-      { name: "Б.Цэлмүүн", event: "'Монгол бахархал' гар зургийн уралдаан", place: 3 },
-      { name: "Б.Цэлмүүн", event: "'Миний мөрөөдлийн дүр' аниме дүр бүтээх уралдаан", place: 1 },
-      { name: "Б.Цэлмүүн", event: "Кенгуру-2026 математикын олимпиад", place: 1 },
-      { name: "Б.Цэлмүүн", event: "Химийн хичээлийн шилдэг сурагч", place: 0, special: "Батламж" },
+      { badge: "Хүрэл медаль", name: "Б. Цэлмүүн", event: "“Монгол бахархал” гар зургийн уралдаан." },
+      { badge: "1-р байр", name: "Б. Цэлмүүн", event: "“Миний мөрөөдлийн дүр” аниме дүр бүтээх уралдаан." },
+      { badge: "1-р зэрэг", name: "Б. Цэлмүүн", event: "Кенгуру-2026 математикийн олимпиад." },
+      { badge: "Батламж", name: "Б. Цэлмүүн", event: "Химийн хичээлийн шилдэг сурагч." },
     ],
     images: [
-      { src: "/slides/7b/image13.jpeg", caption: "Б.Цэлмүүн" },
+      { src: "/slides/7b/image13.jpeg", caption: "Б. Цэлмүүн - Урлаг, математик, хими" },
     ],
   },
   {
-    id: "bilguundulai",
-    icon: Medal,
-    color: "indigo-600",
-    bg: "from-indigo-50 to-white",
-    border: "border-indigo-200",
-    label: "Сурагч Г.Билгүүндалай",
-    title: "Г.Билгүүндалай — Рубик & Шатар & Математик",
+    id: "bilguundalai",
+    tone: "indigo",
+    icon: "trophy",
+    label: "Хувийн амжилт",
+    title: "Г. Билгүүндалай",
     achievements: [
-      { name: "Г.Билгүүндалай", event: "Сургуулийн рубик шооны аварга", place: 3 },
-      { name: "Г.Билгүүндалай", event: "Сургуулийн шатрын аварга", place: 2 },
-      { name: "Г.Билгүүндалай", event: "Кенгуру-2026 математикын олимпиад", place: 2 },
-      { name: "Г.Билгүүндалай", event: "Ангийн шатрын аварга", place: 2 },
-      { name: "Г.Билгүүндалай", event: "Ангийн даамны аварга", place: 1 },
+      { badge: "3-р байр", name: "Г. Билгүүндалай", event: "Сургуулийн рубик шооны аварга." },
+      { badge: "2-р байр", name: "Г. Билгүүндалай", event: "Сургуулийн шатрын аварга." },
+      { badge: "2-р зэрэг", name: "Г. Билгүүндалай", event: "Кенгуру-2026 математикийн олимпиад." },
+      { badge: "2-р байр", name: "Г. Билгүүндалай", event: "Ангийн шатрын аварга." },
+      { badge: "1-р байр", name: "Г. Билгүүндалай", event: "Ангийн даамны аварга." },
     ],
     images: [
-      { src: "/slides/7b/image14.jpeg", caption: "Г.Билгүүндалай" },
-      { src: "/slides/7b/image15.jpg", caption: "Г.Билгүүндалай" },
+      { src: "/slides/7b/image14.jpeg", caption: "Г. Билгүүндалай - Рубик, шатар, математик" },
+      { src: "/slides/7b/image15.jpg", caption: "Г. Билгүүндалай - Тэмцээний оролцоо" },
     ],
   },
   {
     id: "bayar",
-    icon: Trophy,
-    color: "brand-red",
-    bg: "from-red-50 to-white",
-    border: "border-red-200",
-    label: "Сурагч Б.Баяр",
-    title: "Б.Баяр — Олон улсын хөл бөмбөгийн аварга",
+    tone: "red",
+    icon: "award",
+    label: "Хөл бөмбөг",
+    title: "Б. Баяр",
     achievements: [
-      { name: "Б.Баяр", event: "U-12 УАШТ", place: 3 },
-      { name: "Б.Баяр", event: "U-13 УАШТ", place: 1 },
-      { name: "Б.Баяр", event: "U-14 УАШТ", place: 1 },
-      { name: "Б.Баяр", event: "Yongshou Cup 2025", place: 1 },
-      { name: "Б.Баяр", event: "Deven Summer Cup 2025", place: 1 },
-      { name: "Б.Баяр", event: "Deven Cup 2026", place: 2 },
-      { name: "Б.Баяр", event: "Storsjocupen 2025", place: 1 },
-      { name: "Б.Баяр", event: "Helsinki Cup 2025", place: 3 },
-      { name: "Б.Баяр", event: "Russia Cup 2026", place: 1 },
-      { name: "Б.Баяр", event: "Сандагдорж Cup 2025", place: 1 },
+      { badge: "Хүрэл медаль", name: "Б. Баяр", event: "U-12 улсын аварга шалгаруулах тэмцээн." },
+      { badge: "Алтан медаль", name: "Б. Баяр", event: "U-13 улсын аварга шалгаруулах тэмцээн." },
+      { badge: "Алтан медаль", name: "Б. Баяр", event: "U-14 улсын аварга шалгаруулах тэмцээн." },
+      { badge: "Алтан медаль", name: "Б. Баяр", event: "Yongshou Cup 2025." },
+      { badge: "Алтан медаль", name: "Б. Баяр", event: "Deven Summer Cup 2025." },
+      { badge: "Мөнгөн медаль", name: "Б. Баяр", event: "Deven Cup 2026." },
+      { badge: "Алтан медаль", name: "Б. Баяр", event: "Storsjocupen 2025." },
+      { badge: "Хүрэл медаль", name: "Б. Баяр", event: "Helsinki Cup 2025." },
+      { badge: "Алтан медаль", name: "Б. Баяр", event: "Russia Cup 2026." },
+      { badge: "Алтан медаль", name: "Б. Баяр", event: "Сандагдорж Cup 2025." },
     ],
     images: [
-      { src: "/slides/7b/image16.jpeg", caption: "Б.Баяр — Хөл бөмбөг" },
+      { src: "/slides/7b/image16.jpeg", caption: "Б. Баяр - Олон улсын хөл бөмбөгийн амжилт" },
     ],
   },
   {
     id: "odbayar",
-    icon: Award,
-    color: "teal-600",
-    bg: "from-teal-50 to-white",
-    border: "border-teal-200",
-    label: "Сурагч Б.Одбаяр",
-    title: "Б.Одбаяр — Оны тэргүүний сурагч",
+    tone: "teal",
+    icon: "medal",
+    label: "Хувийн амжилт",
+    title: "Б. Одбаяр",
     achievements: [
-      { name: "Б.Одбаяр", event: "Монголын багш нарын холбооны 'Оны тэргүүний сурагч'", place: 1 },
-      { name: "Б.Одбаяр", event: "SASMO олон улсын олимпиад", place: 2 },
-      { name: "Б.Одбаяр", event: "АМО олон улсын олимпиад", place: 2 },
+      { badge: "Оны тэргүүний сурагч", name: "Б. Одбаяр", event: "Монголын багш нарын холбооны алтан медаль." },
+      { badge: "Мөнгөн медаль", name: "Б. Одбаяр", event: "SASMO олон улсын олимпиад." },
+      { badge: "Мөнгөн медаль", name: "Б. Одбаяр", event: "АМО олон улсын олимпиад." },
     ],
     images: [
-      { src: "/slides/7b/image17.jpeg", caption: "Б.Одбаяр — Тэргүүний сурагч" },
+      { src: "/slides/7b/image17.jpeg", caption: "Б. Одбаяр - Оны тэргүүний сурагч" },
     ],
   },
 ];
-
-const placeBadge = (place: number, special?: string) => {
-  if (special) return { label: special, classes: "bg-purple-100 text-purple-700" };
-  if (place === 1) return { label: "🥇 1-р байр", classes: "bg-yellow-100 text-yellow-700" };
-  if (place === 2) return { label: "🥈 2-р байр", classes: "bg-slate-100 text-slate-600" };
-  if (place === 3) return { label: "🥉 3-р байр", classes: "bg-amber-100 text-amber-700" };
-  if (place === 4) return { label: "4-р байр", classes: "bg-slate-50 text-slate-500" };
-  return { label: "✨ Шилдэг", classes: "bg-brand-mist text-brand-blue" };
-};
 
 export default function SevenBPage() {
   return (
@@ -200,14 +167,13 @@ export default function SevenBPage() {
       maleStudents={13}
       femaleStudents={11}
       teacher="Б.Уранчимэг"
-      coverImage={{ src: "/slides/7b/image1.png", alt: "7Б анги", caption: "Ангийн багш: Б.Уранчимэг" }}
+      coverImage={{ src: "/slides/7b/image1.png", alt: "7Б анги", caption: "Б. Уранчимэг багштай 7Б анги" }}
       intro={
         <>
-          7Б ангийн сурагчид <span className="font-black text-brand-navy">сурлага, танин мэдэхүй, урлаг, спорт болон нийгмийн идэвх оролцооны</span>{" "}
-          бүхий л арга хэмжээнд нэгдмэл, зохион байгуулалттай оролцдог сургуулийн жишиг анги.
+          7Б анги нь 13 хөвгүүн, 11 охин нийт 24 сурагчтай. Сурлага, танин мэдэхүй, урлаг, спорт болон нийгмийн идэвх оролцооны олон арга хэмжээнд нэгдмэл зохион байгуулалттай оролцдог хамт олон.
         </>
       }
-      sections={slides}
+      sections={sections}
       footer="7Б анги - Нэгдмэл, авьяаслаг хамт олон"
     />
   );

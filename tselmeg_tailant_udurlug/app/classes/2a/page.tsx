@@ -62,8 +62,6 @@ const sections: ClassReportSection[] = [
     images: [
       { src: "/slides/2a/image11.jpeg", caption: "Даамны аварга" },
       { src: "/slides/2a/image12.jpeg", caption: "100 буудалт даам" },
-      { src: "/slides/2a/image13.jpeg", caption: "Даамны тэмцээн" },
-      { src: "/slides/2a/image14.jpeg", caption: "Даамны амжилт" },
     ],
   },
   {
@@ -77,9 +75,23 @@ const sections: ClassReportSection[] = [
       { badge: "Хүрэл медаль", name: "М.Бүжинлхам", event: "6-7 насны ангилал" },
     ],
     images: [
-      { src: "/slides/2a/image15.jpeg", caption: "Рубик шооны тэмцээн" },
-      { src: "/slides/2a/image16.jpeg", caption: "Рубик шооны аваргууд" },
-      { src: "/slides/2a/image17.jpeg", caption: "Рубик шооны амжилт" },
+      { src: "/slides/2a/image13.jpeg", caption: "Рубик шооны тэмцээн" },
+      { src: "/slides/2a/image14.jpeg", caption: "Рубик шооны тэмцээн" },
+    ],
+  },
+  {
+    id: "spelling-bee",
+    tone: "sky",
+    icon: "book",
+    label: "Англи хэл",
+    title: "Spelling Bee - Үсэглэлийн аварга",
+    achievements: [
+      { badge: "Өргөмжлөл", name: "С.Сувдансондор, Г.Итгэлт, Д.Нинж, Д.Хулангоо, О.Золбоо", event: "Spelling Bee / Үсэглэлийн аварга" },
+    ],
+    images: [
+      { src: "/slides/2a/image15.jpeg", caption: "Spelling Bee тэмцээн" },
+      { src: "/slides/2a/image16.jpeg", caption: "Spelling Bee тэмцээн" },
+      { src: "/slides/2a/image17.jpeg", caption: "Spelling Bee тэмцээн" },
     ],
   },
   {
@@ -102,20 +114,16 @@ const sections: ClassReportSection[] = [
     tone: "sky",
     icon: "book",
     label: "Сургалт",
-    title: "Үсэглэлийн аварга, Сүлд модоо чимье, Хүрдний АХА",
+    title: "Сүлд модоо чимье, Хүрдний АХА",
     achievements: [
-      { badge: "Өргөмжлөл", name: "С.Сувдансондор, Г.Итгэлт, Д.Нинж, Д.Хулангоо, О.Золбоо", event: "Үсэглэлийн аварга" },
       { badge: "1-р байр", name: "Х.Тэгшжаргал", event: "Сүлд модоо чимье" },
       { badge: "Дэд байр", name: "Н.Энэрэл", event: "Хүрдний АХА" },
       { badge: "Гутгаар байр", name: "Г.Итгэлт", event: "Хүрдний АХА" },
     ],
     images: [
       { src: "/slides/2a/image20.jpeg", caption: "Сүлд модоо чимье" },
-      { src: "/slides/2a/image21.png", caption: "Сүлд модоо чимье бүтээл" },
-      { src: "/slides/2a/image22.jpeg", caption: "Үсэглэлийн аварга" },
-      { src: "/slides/2a/image23.jpeg", caption: "Хүрдний АХА" },
-      { src: "/slides/2a/image24.jpeg", caption: "Математикийн тэмцээн" },
-      { src: "/slides/2a/image25.jpeg", caption: "Математикийн идэвхтэй оролцоо" },
+      { src: "/slides/2a/image21.png", caption: "Сүлд модоо чимье" },
+      { src: "/slides/2a/image22.jpeg", caption: "Хүрдний АХА" },
     ],
   },
   {
@@ -128,6 +136,9 @@ const sections: ClassReportSection[] = [
       { badge: "Хамтын оролцоо", name: "2А анги", event: "Хүн Орчин хичээлийн туршилт" },
     ],
     images: [
+      { src: "/slides/2a/image23.jpeg", caption: "Туршилт хичээлийн үйл явц" },
+      { src: "/slides/2a/image24.jpeg", caption: "Сурагчдын туршилтын ажил" },
+      { src: "/slides/2a/image25.jpeg", caption: "Туршилт хичээлийн оролцоо" },
       { src: "/slides/2a/image26.jpeg", caption: "Туршилт хичээл" },
       { src: "/slides/2a/image27.jpeg", caption: "Ангидаа туршилт хийсэн нь" },
       { src: "/slides/2a/image28.jpeg", caption: "Хамтын туршилт" },
@@ -137,7 +148,6 @@ const sections: ClassReportSection[] = [
       { src: "/slides/2a/image32.jpeg", caption: "Бүтээлч ажил" },
       { src: "/slides/2a/image33.jpeg", caption: "Хамтын бүтээл" },
       { src: "/slides/2a/image34.jpeg", caption: "Туршилтын танилцуулга" },
-      { src: "/slides/2a/image37.png", caption: "Анги хамт олны оролцоо" },
     ],
   },
   {
@@ -152,6 +162,7 @@ const sections: ClassReportSection[] = [
     images: [
       { src: "/slides/2a/image35.jpeg", caption: "Монгол ахуйтай танилцсан нь" },
       { src: "/slides/2a/image36.jpeg", caption: "Аяллын дурсамж" },
+      { src: "/slides/2a/image37.png", caption: "Төл малтай танилцсан хамт олон" },
       { src: "/slides/2a/image38.jpeg", caption: "Төл малтай танилцах аялал" },
       { src: "/slides/2a/image39.jpeg", caption: "Аяллын өдөр" },
       { src: "/slides/2a/image40.jpeg", caption: "Хамт олны аялал" },

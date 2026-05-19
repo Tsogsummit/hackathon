@@ -1,0 +1,22 @@
+{
+  "name": "tselmeg-final-exam",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "generate_credentials": "node scripts/generate_credentials.js",
+    "seed_exam_questions": "node scripts/seed_exam_questions.js",
+    "generate_scratch_assets": "node scripts/generate_scratch_assets.js",
+    "assign_random_exam": "node scripts/assign_random_exam.js",
+    "create_test_exam": "node scripts/create_test_exam.js",
+    "run_test_users": "node scripts/run_test_users.js",
+    "autograde_submission": "node scripts/autograde_submission.js",
+    "seed": "npm run seed_exam_questions && npm run generate_credentials && npm run assign_random_exam",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

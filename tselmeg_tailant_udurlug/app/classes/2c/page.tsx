@@ -31,8 +31,6 @@ const sections: ClassReportSection[] = [
     images: [
       { src: "/slides/2c/image2.jpeg", caption: "Найрал дууны амжилт" },
       { src: "/slides/2c/image4.jpeg", caption: "Halloween best costume" },
-      { src: "/slides/2c/image5.jpeg", caption: "Spelling Bee" },
-      { src: "/slides/2c/image6.jpeg", caption: "Spelling Bee оролцогчид" },
     ],
   },
   {
@@ -51,9 +49,10 @@ const sections: ClassReportSection[] = [
       { badge: "Тэргүүн байр", name: "С.Нандин-Эрдэнэ, Д.Марал, А.Нараншижир, Н.Хасуй, Ж.Сэцэн, Б.Урандарь", event: "Хүрдний Хаан" },
     ],
     images: [
+      { src: "/slides/2c/image5.jpeg", caption: "Математикийн олимпиадын амжилт" },
+      { src: "/slides/2c/image6.jpeg", caption: "Олимпиадын оролцогчид" },
       { src: "/slides/2c/image7.jpeg", caption: "Олимпиадын амжилт" },
       { src: "/slides/2c/image8.jpeg", caption: "Хүрдний баяр" },
-      { src: "/slides/2c/image9.jpeg", caption: "Хүрдний АХА" },
       { src: "/slides/2c/image23.jpeg", caption: "Математикийн оролцогчид" },
     ],
   },
@@ -72,6 +71,7 @@ const sections: ClassReportSection[] = [
       { badge: "Алтан медаль", name: "Н.Энэрэл", event: "Уран жиргээ-2026" },
     ],
     images: [
+      { src: "/slides/2c/image9.jpeg", caption: "Бүтээлч уралдааны оролцоо" },
       { src: "/slides/2c/image10.jpeg", caption: "Гар зургийн бүтээл" },
       { src: "/slides/2c/image11.jpeg", caption: "Гар зургийн амжилт" },
       { src: "/slides/2c/image12.jpeg", caption: "Бүтээл" },
@@ -103,8 +103,8 @@ const sections: ClassReportSection[] = [
       { src: "/slides/2c/image21.jpeg", caption: "Хөх дөл хамтлаг" },
       { src: "/slides/2c/image22.jpeg", caption: "Бүжгийн өргөмжлөл" },
       { src: "/slides/2c/image24.jpeg", caption: "Таеквондогийн амжилт" },
-      { src: "/slides/2c/image25.jpeg", caption: "Шатрын аваргууд" },
-      { src: "/slides/2c/image26.jpeg", caption: "Даамны амжилт" },
+      { src: "/slides/2c/image25.jpeg", caption: "Даамны амжилт" },
+      { src: "/slides/2c/image26.jpeg", caption: "Шатрын амжилт" },
     ],
   },
 ];

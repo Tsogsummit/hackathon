@@ -19,7 +19,7 @@ async function main() {
 
   const high = ["9A", "9B", "10A", "10B", "10C", "11A", "11B", "11C", "12A", "12B"];
   const middle = ["6A", "6B", "6C", "7A", "7B", "7C", "8A", "8B"];
-  const primary = ["2A", "2B", "2C", "3B", "4B"];
+  const primary = ["2A", "2B", "2C", "3A", "3B", "4A", "4B", "5A", "5B"];
 
   for (const [index, name] of high.entries()) {
     await prisma.schoolClass.upsert({

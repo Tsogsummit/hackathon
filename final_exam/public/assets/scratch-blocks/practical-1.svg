@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="730" viewBox="0 0 900 730">
+  <rect width="900" height="730" fill="#f7fbff"/>
+  <rect x="24" y="22" width="852" height="686" rx="18" fill="#ffffff" stroke="#d9dee8"/>
+  <text x="54" y="64" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#183153">Scratch засвар 1: Frog эхлэх ба хөдөлгөөн засах</text>
+  <text x="54" y="96" font-family="Arial, sans-serif" font-size="17" fill="#344054">Project-ийг шинээр хийхгүй. Доорх алхмуудаар алдаатай хэсгийг засна.</text>
+  
+        <rect x="62" y="178" width="404" height="68" rx="12" fill="#f8fafc" stroke="#d9dee8"/>
+        <circle cx="92" cy="212" r="18" fill="#1f6feb"/>
+        <text x="86" y="219" font-family="Arial" font-size="18" font-weight="700" fill="#fff">1</text>
+        <text x="124" y="206" font-family="Arial, sans-serif" font-size="15" fill="#1d2939">Frog-ийг x: 0, y: -150 дээр эхлүүл.</text>
+        <rect x="62" y="266" width="404" height="68" rx="12" fill="#f8fafc" stroke="#d9dee8"/>
+        <circle cx="92" cy="300" r="18" fill="#1f6feb"/>
+        <text x="86" y="307" font-family="Arial" font-size="18" font-weight="700" fill="#fff">2</text>
+        <text x="124" y="294" font-family="Arial, sans-serif" font-size="15" fill="#1d2939">Frog-ийн хэмжээг 50% болго.</text>
+        <rect x="62" y="354" width="404" height="68" rx="12" fill="#f8fafc" stroke="#d9dee8"/>
+        <circle cx="92" cy="388" r="18" fill="#1f6feb"/>
+        <text x="86" y="395" font-family="Arial" font-size="18" font-weight="700" fill="#fff">3</text>
+        <text x="124" y="382" font-family="Arial, sans-serif" font-size="15" fill="#1d2939">Дээш, доош, баруун, зүүн сум бүгд</text><text x="124" y="404" font-family="Arial, sans-serif" font-size="15" fill="#1d2939">ажилладаг болго.</text>
+        <rect x="62" y="442" width="404" height="68" rx="12" fill="#f8fafc" stroke="#d9dee8"/>
+        <circle cx="92" cy="476" r="18" fill="#1f6feb"/>
+        <text x="86" y="483" font-family="Arial" font-size="18" font-weight="700" fill="#fff">4</text>
+        <text x="124" y="470" font-family="Arial, sans-serif" font-size="15" fill="#1d2939">Хөдөлгөөний block-уудаа movement</text><text x="124" y="492" font-family="Arial, sans-serif" font-size="15" fill="#1d2939">custom block дотор цэгцэл.</text>
+    <circle cx="528" cy="202" r="15" fill="#fff" stroke="#1d2939" stroke-width="2"/>
+    <text x="523" y="208" font-family="Arial" font-size="16" font-weight="700" fill="#1d2939">1</text>
+    <rect x="548" y="178" width="300" height="58" rx="12" fill="#ffd84d" stroke="#d0a12c" stroke-width="2"/>
+    <text x="560" y="209" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#1d2939">when green flag clicked</text>
+    <circle cx="558" cy="268" r="15" fill="#fff" stroke="#1d2939" stroke-width="2"/>
+    <text x="553" y="274" font-family="Arial" font-size="16" font-weight="700" fill="#1d2939">2</text>
+    <rect x="578" y="244" width="220" height="58" rx="12" fill="#f06292" stroke="#d0a12c" stroke-width="2"/>
+    <text x="590" y="275" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#1d2939">startup</text>
+    <circle cx="558" cy="334" r="15" fill="#fff" stroke="#1d2939" stroke-width="2"/>
+    <text x="553" y="340" font-family="Arial" font-size="16" font-weight="700" fill="#1d2939">3</text>
+    <rect x="578" y="310" width="300" height="58" rx="12" fill="#ffbf35" stroke="#d0a12c" stroke-width="2"/>
+    <text x="590" y="341" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#1d2939">repeat until touching Gift?</text>
+    <circle cx="588" cy="400" r="15" fill="#fff" stroke="#1d2939" stroke-width="2"/>
+    <text x="583" y="406" font-family="Arial" font-size="16" font-weight="700" fill="#1d2939">4</text>
+    <rect x="608" y="376" width="220" height="58" rx="12" fill="#f06292" stroke="#d0a12c" stroke-width="2"/>
+    <text x="620" y="407" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#1d2939">movement</text>
+    <circle cx="588" cy="466" r="15" fill="#fff" stroke="#1d2939" stroke-width="2"/>
+    <text x="583" y="472" font-family="Arial" font-size="16" font-weight="700" fill="#1d2939">5</text>
+    <rect x="608" y="442" width="300" height="58" rx="12" fill="#ffbf35" stroke="#d0a12c" stroke-width="2"/>
+    <text x="620" y="473" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#1d2939">if touching color black?</text>
+    <circle cx="618" cy="532" r="15" fill="#fff" stroke="#1d2939" stroke-width="2"/>
+    <text x="613" y="538" font-family="Arial" font-size="16" font-weight="700" fill="#1d2939">6</text>
+    <rect x="638" y="508" width="260" height="58" rx="12" fill="#5c8df6" stroke="#d0a12c" stroke-width="2"/>
+    <text x="650" y="539" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#1d2939">go to x: 0 y: -150</text>
+    <rect x="86" y="548" width="214" height="156" rx="12" fill="#f8fafc" stroke="#cbd5e1" stroke-width="2"/>
+    <line x1="193" y1="564" x2="193" y2="688" stroke="#d0d5dd" stroke-dasharray="4 4"/>
+    <line x1="104" y1="626" x2="282" y2="626" stroke="#d0d5dd" stroke-dasharray="4 4"/>
+    <text x="174" y="696" font-family="Arial" font-size="12" fill="#667085">Stage</text><path d="M106 666 L158 666 L158 618 L224 618 L224 580 L276 580" stroke="#101828" stroke-width="13" fill="none" stroke-linecap="round"/><circle cx="193" cy="674" r="13" fill="#31b76a"/><text x="176" y="661" font-family="Arial" font-size="12" font-weight="700" fill="#16845b">Frog</text><rect x="168" y="566" width="28" height="28" rx="4" fill="#f7c948"/><line x1="182" y1="566" x2="182" y2="594" stroke="#b54708" stroke-width="3"/><text x="152" y="610" font-family="Arial" font-size="12" font-weight="700" fill="#a15c00">Gift</text>
+    <rect x="506" y="610" width="308" height="70" rx="12" fill="#fff8e8" stroke="#f0c36d"/>
+    <text x="524" y="636" font-family="Arial, sans-serif" font-size="14" fill="#7a4d00">Энэ бол хийх block-уудын жишээ.</text><text x="524" y="657" font-family="Arial, sans-serif" font-size="14" fill="#7a4d00">Project дээрээ тохирох sprite-ийн</text><text x="524" y="678" font-family="Arial, sans-serif" font-size="14" fill="#7a4d00">script хэсэгт байрлуулна.</text>
+</svg>
